@@ -1,0 +1,23 @@
+{
+  "name": "wedding-photo-app",
+  "version": "1.0.0",
+  "description": "Allows wedding guests to upload their photos using a simple website",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewchart/wedding-photo-app.git"
+  },
+  "author": "Andrew Chart <achart@hotmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andrewchart/wedding-photo-app/issues"
+  },
+  "homepage": "https://github.com/andrewchart/wedding-photo-app#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
