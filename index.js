@@ -1,8 +1,12 @@
 
-// Setup Express
+/* Setup Express */
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
+
+
+/* Load API Methods */
+const photosAPI = require('./api/photos.js');
 
 /* Serve static files from the public folder */
 app.use(express.static('public'));
@@ -19,6 +23,21 @@ app.get('/api', (req, res) => {
     res.status(response.status).json(response);
 
 });
+
+
+/* Photo API endpoints */
+app.get('/api/photos', (req, res) => {
+    photosAPI.getPhotos(req, res);
+});
+
+app.post('/api/photos', (req, res) => {
+    photosAPI.createPhotos(req, res);
+});
+
+app.delete('/api/photos', (req, res) => {
+    photosAPI.deletePhotos(req, res);
+});
+
 
 /* All other routes should 404 */
 app.all('*', (req, res) => {
