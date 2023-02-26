@@ -9,8 +9,9 @@ function renderPhotoThumbnails(pageSize = 12) {
     
     if(galleryElement.dataset.done === "true") return;
 
-    // Start spinner
+    // Start spinner & mark window to say a fetch is in progress
     spinnerElement.classList.remove('hidden');
+    window.fetchIsRunning = true;
 
     fetch(`/api/photos?pageSize=${pageSize}&pageMarker=${pageMarker}`)
 
@@ -44,12 +45,14 @@ function renderPhotoThumbnails(pageSize = 12) {
 
             // If the gallery is now done, show a message
             if(galleryElement.dataset.done === "true") {
+
                 setRefreshMessages(
                     "No more photos to show.",
                     "Refresh to see newer photos"
                 );
+
                 showRefreshLink();
-                return;
+                
             };
 
         })
@@ -61,35 +64,39 @@ function renderPhotoThumbnails(pageSize = 12) {
                 "Tap here to try again"
             );
 
-            galleryElement.dataset.done = "true";
-
             showRefreshLink();
+
+            galleryElement.dataset.done = "true";
 
         })
 
         .finally(() => {
             spinnerElement.classList.add('hidden');
+            window.fetchIsRunning = false;
         });
 
 };
+
 
 function loadMoreOnScroll() {
 
     throttle(() => {
 
         if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
-            console.log('load more');
+            if(window.fetchIsRunning) return;
             renderPhotoThumbnails(2);
         };
 
-    }, 1000);
+    }, 500);
     
 }
+
 
 function refreshPhotoThumbnails() {
 
 }
 
+/* Utility functions */
 function setRefreshMessages(message, action) {
     document.querySelector('#refreshLink .message').innerHTML = message;
     document.querySelector('#refreshLink .action').innerHTML = action;
@@ -109,7 +116,6 @@ function getThumbnailUrl(largeUrl) {
 /* Event handlers */
 document.addEventListener('DOMContentLoaded', renderPhotoThumbnails(2));
 document.addEventListener('scroll', loadMoreOnScroll);
-
 
 // Scroll event throttling
 var throttleTimer;
