@@ -20,8 +20,9 @@
             <p>We hope you're having an amazing day!</p>
             <p>Got a good photo? Please upload it here to share with us and your fellow guests</p>
 
-            <form>
-                <input id="upload-btn" type="button" value="Upload Photos" />
+            <form method="post" enctype="multipart/form-data">
+                <input id="uploadBtn" type="button" value="Upload Photos" />
+                <input id="imageFiles" type="file" accept="image/*" multiple />
             </form>
 
             <h3>Gallery</h3>

@@ -68,6 +68,10 @@ input[type=button]:active {
     background-color: #fff3da;
 }
 
+input[type=file] {
+    display: none;
+}
+
 #refreshLink.hidden,
 #spinner.hidden {
     display: none;

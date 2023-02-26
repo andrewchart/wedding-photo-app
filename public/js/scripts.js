@@ -117,6 +117,14 @@ function getThumbnailUrl(largeUrl) {
 document.addEventListener('DOMContentLoaded', renderPhotoThumbnails(2));
 document.addEventListener('scroll', loadMoreOnScroll);
 
+document.getElementById('uploadBtn').onclick = () => {
+    document.getElementById('imageFiles').click();
+}
+
+document.getElementById('imageFiles').onchange = (event) => {
+    console.log('files changed', event.target.files);
+}
+
 // Scroll event throttling
 var throttleTimer;
 
