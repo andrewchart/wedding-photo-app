@@ -122,7 +122,46 @@ document.getElementById('uploadBtn').onclick = () => {
 }
 
 document.getElementById('imageFiles').onchange = (event) => {
-    console.log('files changed', event.target.files);
+    
+    const uploadFeedbackElement = document.getElementById('uploadFeedback');
+    const uploadProgressElement = uploadFeedbackElement.querySelector('progress');
+    const uploadMessageElement  = uploadFeedbackElement.querySelector('#uploadFeedbackMsg');
+
+    const files = event.target.files;
+    const numFiles = files.length;
+    
+    uploadFeedbackElement.classList.remove('hidden');
+
+    for(let currFile = 0; currFile < files.length; currFile++) {
+        
+        let message = `Uploading photo ${currFile + 1} of ${numFiles}...`;
+        uploadMessageElement.innerHTML = message;
+
+        fetch("/api/photos", {
+            method: 'POST',
+            body: files[currFile]
+        });
+
+    }
+    
+    
+    // .then(response => {
+    //     if(Math.floor(response.status/100) === 2) {
+    //         return response.json();
+    //     } else {
+    //         throw new Error('Fetch of photo urls from blob storage failed');
+    //     }
+    // })
+
+    // .then(data => {
+    //     if(data.status===500) throw new Error(data.error);
+    // })
+
+    // .catch((error) => {
+    //     uploadMessageElement.innerHTML = `Could not upload your photos, please
+    //                                       close this window and try again`;
+    // });
+
 }
 
 // Scroll event throttling

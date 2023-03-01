@@ -72,9 +72,8 @@ input[type=file] {
     display: none;
 }
 
-#refreshLink.hidden,
-#spinner.hidden {
-    display: none;
+.hidden {
+    display: none!important;
 }
 
 #gallery {

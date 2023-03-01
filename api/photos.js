@@ -61,7 +61,29 @@ async function getPhotos(req, res) {
 
 // POST
 function createPhotos(req, res) {
-    res.send('create photos');
+    
+    try {
+
+        let fileName = Date.now().toString() + '.jpg';
+
+        // Set up client for the blob we're about to create
+        const blockBlob = new BlockBlobClient(
+            containerUrl + `original/${fileName}`, 
+            new DefaultAzureCredential()
+        );
+        
+        // Upload the original immediately
+        blockBlob.uploadStream(req);
+        
+        req.on('end', () => {
+            res.status(201).send('Photos uploaded successfully!');
+        });
+        
+    } catch(error) {
+        console.log(error);
+        res.status(500).send({ error: "Could not upload photos." });
+    }
+   
 }
 
 // DELETE
