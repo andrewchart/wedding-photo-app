@@ -1,28 +1,28 @@
 require('dotenv').config();
 
-const { BlobServiceClient } = require("@azure/storage-blob");
+const { BlobServiceClient, BlockBlobClient } = require("@azure/storage-blob");
 const { DefaultAzureCredential } = require("@azure/identity");
 
-
-// Set up clients for the blob and the container
 const accountName   = process.env.AZ_STORAGE_ACCOUNT_NAME;
 const containerName = process.env.AZ_STORAGE_CONTAINER_NAME;
 const accountUrl    = `https://${accountName}.blob.core.windows.net`;
 const containerUrl  = `${accountUrl}/${containerName}/`;
 
-const blob = new BlobServiceClient(
-    accountUrl,
-    new DefaultAzureCredential()
-);
-
-const container = blob.getContainerClient(containerName);
-
 
 // GET
 async function getPhotos(req, res) {
 
+    // Set up clients for the blob, the container
+    const blob = new BlobServiceClient(
+        accountUrl,
+        new DefaultAzureCredential()
+    );
+
+    const container = blob.getContainerClient(containerName);
+
+     // Bring back the url for the large image
     let blobOpts = {
-        prefix: 'large' // Bring back the url for the large image
+        prefix: 'large'
     }
 
     // Pagination options
@@ -54,7 +54,7 @@ async function getPhotos(req, res) {
         });
 
     } catch(error) {
-        res.status(500).send({ error: "Could not retrieve photos" })
+        res.status(500).send({ error: "Could not retrieve photos" });
     }
     
 }
