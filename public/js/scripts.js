@@ -139,7 +139,10 @@ document.getElementById('imageFiles').onchange = (event) => {
 
         fetch("/api/photos", {
             method: 'POST',
-            body: files[currFile]
+            body: files[currFile],
+            headers: {
+                "Content-Type": files[currFile].type
+            },
         });
 
     }

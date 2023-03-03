@@ -61,19 +61,28 @@ async function getPhotos(req, res) {
 
 // POST
 function createPhotos(req, res) {
-    
+
     try {
 
-        let fileName = Date.now().toString() + '.jpg';
+        const contentType = req.headers["content-type"];
+        const nowString = Date.now().toString();
+        const extension = getExtensionFromContentType(contentType);
+        const fileName = `${nowString}.${extension}`; 
 
         // Set up client for the blob we're about to create
         const blockBlob = new BlockBlobClient(
-            containerUrl + `original/${fileName}`, 
+            containerUrl + `${fileName}`, 
             new DefaultAzureCredential()
         );
         
-        // Upload the original immediately
-        blockBlob.uploadStream(req);
+        // Stream the original to blob storage immediately, 
+        // passing thru Content-Type
+        blockBlob.uploadStream(
+            req, 
+            8 * 1024 * 1024, //bufferSize: 8MB (Default)
+            2,               //maxConcurrency
+            { blobHTTPHeaders: { blobContentType: contentType } }
+        );
         
         req.on('end', () => {
             res.status(201).send('Photos uploaded successfully!');
@@ -90,6 +99,30 @@ function createPhotos(req, res) {
 function deletePhotos(req, res) {
     res.send('delete photos');
 }
+
+
+// HELPERS
+function getExtensionFromContentType(contentType) {
+
+    const suffix = contentType.split("/")[1];
+    
+    switch(suffix) {
+        
+        case 'heic':
+            return 'HEIC';
+        
+        case 'jpeg':
+            return 'jpg';
+            
+        case 'quicktime':
+            return 'mov';
+
+        default:
+            return suffix;
+    }
+
+}
+
   
 module.exports = { 
     getPhotos,
