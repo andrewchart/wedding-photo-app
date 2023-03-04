@@ -1,7 +1,7 @@
 // HTML Elements
 const galleryElement = document.getElementById('gallery');
 const spinnerElement = document.getElementById('spinner');
-const galleryItemTemplate = document.getElementById('gallery-item').content;
+const galleryItemTemplate = document.getElementById('galleryItem').content;
 const uploadFeedbackElement = document.getElementById('uploadFeedback');
 const uploadProgressElement = uploadFeedbackElement.querySelector('progress');
 const uploadMessageElement  = uploadFeedbackElement.querySelector('#uploadFeedbackMsg');
