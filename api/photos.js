@@ -65,13 +65,14 @@ function createPhotos(req, res) {
     try {
 
         const contentType = req.headers["content-type"];
+        const originalFilename = req.query.originalFilename.split(".")[0];
         const nowString = Date.now().toString();
         const extension = getExtensionFromContentType(contentType);
-        const fileName = `${nowString}.${extension}`; 
+        const bucketFilename = `${originalFilename}-${nowString}.${extension}`; 
 
         // Set up client for the blob we're about to create
         const blockBlob = new BlockBlobClient(
-            containerUrl + `${fileName}`, 
+            containerUrl + `${bucketFilename}`, 
             new DefaultAzureCredential()
         );
         

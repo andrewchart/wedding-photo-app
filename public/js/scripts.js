@@ -113,8 +113,9 @@ function uploadPhotos(event) {
         
         let message = `Uploading file ${currFile + 1} of ${numFiles}...`;
         uploadMessageElement.innerHTML = message;
+        let originalFilename = encodeURIComponent(files[currFile].name);
 
-        fetch("/api/photos", {
+        fetch(`/api/photos?originalFilename=${originalFilename}`, {
             method: 'POST',
             body: files[currFile],
             headers: {
