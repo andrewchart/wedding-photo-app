@@ -38,9 +38,10 @@ function renderPhotoThumbnails(pageSize = 12) {
     
             // Populate the gallery
             data.files.forEach(file => {
+                
                 let galleryItem = galleryItemTemplate.cloneNode(true);
 
-                galleryItem.querySelector('a').href = file.url;
+                galleryItem.querySelector('a').href = getLightboxUrl(file.url);
                 galleryItem.querySelector('img').src = getThumbnailUrl(file.url);
                 
                 galleryElement.append(galleryItem);
@@ -165,7 +166,11 @@ function showRefreshLink() {
 }
 
 function getThumbnailUrl(largeUrl) {
-    return largeUrl.replace("/large/","/thumbnails/");
+    return largeUrl + '?q=48&&h=280';
+}
+
+function getLightboxUrl(largeUrl) {
+    return largeUrl + '?q=65&h=1080';
 }
 
 function showUploadFeedback() {

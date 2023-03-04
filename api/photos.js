@@ -6,7 +6,8 @@ const { DefaultAzureCredential } = require("@azure/identity");
 const accountName   = process.env.AZ_STORAGE_ACCOUNT_NAME;
 const containerName = process.env.AZ_STORAGE_CONTAINER_NAME;
 const accountUrl    = `https://${accountName}.blob.core.windows.net`;
-const containerUrl  = `${accountUrl}/${containerName}/`;
+const containerUrl  = `${accountUrl}/${containerName}`;
+const imageCdnUrl   = process.env.IMAGE_CDN_BASE_URL;
 
 
 // GET
@@ -41,10 +42,22 @@ async function getPhotos(req, res) {
 
         let files = [];
 
-        items.forEach(item => files.push({
-            url: containerUrl + item.name,
-            contentType: item.properties.contentType
-        }));
+        items.forEach(item => {
+
+            const contentType = item.properties.contentType;
+
+            // If the content is an image and image CDN url is specified, return
+            // the CDN-ized url in the response. Otherwise just return the blob url
+            const baseUrl = (contentType.split('/')[0] === 'image' && imageCdnUrl) ? 
+                imageCdnUrl : 
+                containerUrl;
+
+            files.push({
+                url: `${baseUrl}/${item.name}`,
+                contentType
+            });
+
+        });
 
         res.send({
             files,
@@ -71,7 +84,7 @@ function createPhotos(req, res) {
 
         // Set up client for the blob we're about to create
         const blockBlob = new BlockBlobClient(
-            containerUrl + `${bucketFilename}`, 
+            `${containerUrl}/${bucketFilename}`, 
             new DefaultAzureCredential()
         );
         
