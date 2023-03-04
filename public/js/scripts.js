@@ -1,10 +1,14 @@
+// HTML Elements
+const galleryElement = document.getElementById('gallery');
+const spinnerElement = document.getElementById('spinner');
+const galleryItemTemplate = document.getElementById('gallery-item').content;
+const uploadFeedbackElement = document.getElementById('uploadFeedback');
+const uploadProgressElement = uploadFeedbackElement.querySelector('progress');
+const uploadMessageElement  = uploadFeedbackElement.querySelector('#uploadFeedbackMsg');
 
 
 function renderPhotoThumbnails(pageSize = 12) {
 
-    let galleryElement = document.getElementById('gallery');
-    let spinnerElement = document.getElementById('spinner');
-    let galleryItemTemplate = document.getElementById('gallery-item').content;
     let pageMarker = galleryElement.dataset.nextPage || "";
     
     if(galleryElement.dataset.done === "true") return;
@@ -96,45 +100,18 @@ function refreshPhotoThumbnails() {
 
 }
 
-/* Utility functions */
-function setRefreshMessages(message, action) {
-    document.querySelector('#refreshLink .message').innerHTML = message;
-    document.querySelector('#refreshLink .action').innerHTML = action;
-}
-
-function showRefreshLink() {
-    let refreshLinkElement = document.getElementById('refreshLink');
-    if(refreshLinkElement && refreshLinkElement.classList.contains('hidden')) {
-        refreshLinkElement.classList.remove('hidden');
-    }
-}
-
-function getThumbnailUrl(largeUrl) {
-    return largeUrl.replace("/large/","/thumbnails/");
-}
-
-/* Event handlers */
-document.addEventListener('DOMContentLoaded', renderPhotoThumbnails(2));
-document.addEventListener('scroll', loadMoreOnScroll);
-
-document.getElementById('uploadBtn').onclick = () => {
-    document.getElementById('imageFiles').click();
-}
-
-document.getElementById('imageFiles').onchange = (event) => {
+function uploadPhotos(event) {
     
-    const uploadFeedbackElement = document.getElementById('uploadFeedback');
-    const uploadProgressElement = uploadFeedbackElement.querySelector('progress');
-    const uploadMessageElement  = uploadFeedbackElement.querySelector('#uploadFeedbackMsg');
-
     const files = event.target.files;
     const numFiles = files.length;
-    
-    uploadFeedbackElement.classList.remove('hidden');
+
+    if(numFiles === 0) return;
+
+    showUploadFeedback();
 
     for(let currFile = 0; currFile < files.length; currFile++) {
         
-        let message = `Uploading photo ${currFile + 1} of ${numFiles}...`;
+        let message = `Uploading file ${currFile + 1} of ${numFiles}...`;
         uploadMessageElement.innerHTML = message;
 
         fetch("/api/photos", {
@@ -167,6 +144,39 @@ document.getElementById('imageFiles').onchange = (event) => {
 
 }
 
+function cancelUpload() {
+    // TODO: Check for running fetches
+    hideUploadFeedback();
+}
+
+
+/* Utility functions */
+function setRefreshMessages(message, action) {
+    document.querySelector('#refreshLink .message').innerHTML = message;
+    document.querySelector('#refreshLink .action').innerHTML = action;
+}
+
+function showRefreshLink() {
+    let refreshLinkElement = document.getElementById('refreshLink');
+    if(refreshLinkElement && refreshLinkElement.classList.contains('hidden')) {
+        refreshLinkElement.classList.remove('hidden');
+    }
+}
+
+function getThumbnailUrl(largeUrl) {
+    return largeUrl.replace("/large/","/thumbnails/");
+}
+
+function showUploadFeedback() {
+    document.body.classList.add('locked');
+    document.getElementById('uploadFeedback').classList.remove('hidden');
+}
+
+function hideUploadFeedback() {
+    document.body.classList.remove('locked');
+    document.getElementById('uploadFeedback').classList.add('hidden');
+}
+
 // Scroll event throttling
 var throttleTimer;
 
@@ -178,3 +188,21 @@ function throttle(callback, time) {
         throttleTimer = false;
     }, time);
 };
+
+
+/* Event handlers */
+document.addEventListener('DOMContentLoaded', renderPhotoThumbnails(2));
+document.addEventListener('scroll', loadMoreOnScroll);
+
+document.getElementById('uploadBtn').onclick = () => {
+    document.getElementById('imageFiles').click();
+}
+
+document.getElementById('imageFiles').onchange = (event) => {
+    uploadPhotos(event);
+}
+
+document.getElementById('cancelUpload').onclick = (event) => {
+    event.preventDefault();
+    cancelUpload();
+}

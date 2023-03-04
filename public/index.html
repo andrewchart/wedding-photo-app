@@ -18,15 +18,16 @@
         </header>
         <section>
             <p>We hope you're having an amazing day!</p>
-            <p>Got a good photo? Please upload it here to share with us and your fellow guests</p>
+            <p>Please upload your photos &amp; videos to share with us and your fellow guests</p>
 
             <form id="uploadForm" method="post" action="/api/photos">
                 <input id="uploadBtn" type="button" value="Upload Photos" />
                 <input id="imageFiles" type="file" accept="image/*, image/heic, video/*" multiple />
                 <div id="uploadFeedback" class="hidden">
-                    <h4>Uploading photos</h4>
+                    <h4>Uploading</h4>
                     <progress></progress>
                     <p id="uploadFeedbackMsg"></p>
+                    <button id="cancelUpload">Cancel</button>
                 </div>
             </form>
 

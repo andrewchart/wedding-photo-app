@@ -10,6 +10,11 @@ html, body {
     min-height: 120%;
 }
 
+body.locked {
+    position: fixed;
+    overflow: hidden;
+}
+
 a {
     color: #0071db;
 }
@@ -44,7 +49,7 @@ body > section {
 }
 
 p {
-    margin-bottom: 0.8em;
+    margin-bottom: 1em;
 }
 
 h3 {
@@ -53,8 +58,9 @@ h3 {
     font-weight: 600;
 }
 
+button, 
 input[type=button] { 
-    margin-top: 1.5em;
+    margin-top: 1.3em;
     font-family: Mulish, Helvetica, Arial, sans-serif;
     border: 2px solid #b28b0d;
     border-radius: 0.5em;
@@ -64,6 +70,7 @@ input[type=button] {
     color: #493300;
 }
 
+button, 
 input[type=button]:active {
     background-color: #fff3da;
 }
@@ -157,6 +164,65 @@ input[type=file] {
 
 #refreshLink .action {
     padding: 20px;
+}
+
+#uploadFeedback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,0.86);
+    color: #fff;
+}
+
+#uploadFeedback h4 {
+    font-size: 1.8em;
+    margin: 34vh auto 0.67em;
+}
+
+#uploadFeedbackMsg {
+    font-size: 1.1em;
+    margin-top: 1.2em;
+}
+
+#uploadFeedback progress {
+    width: 55%;
+    height: 4.8px;
+    display: inline-block;
+    position: relative;
+    background: rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+}
+
+#uploadFeedback progress::after {
+    content: '';
+    width: 49%;
+    height: 4.8px;
+    background: #FFF;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    animation: progress 1.6s linear infinite;
+}
+  
+@keyframes progress {
+    0% {
+        left: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        left: 100%;
+        transform: translateX(0%);
+    }
+}
+
+#cancelUpload {
+    margin-top: 0.6em;
+    padding: 0.5em 1.7em;
+    background-color: #111;
+    color: white;
 }
 
 @media screen and (min-width: 450px) {
