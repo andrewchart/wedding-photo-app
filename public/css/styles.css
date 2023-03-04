@@ -10,8 +10,7 @@ html, body {
     min-height: 120%;
 }
 
-body.locked {
-    position: fixed;
+body.locked {   
     overflow: hidden;
 }
 
@@ -70,7 +69,6 @@ input[type=button] {
     color: #493300;
 }
 
-button, 
 input[type=button]:active {
     background-color: #fff3da;
 }
@@ -223,6 +221,10 @@ input[type=file] {
     padding: 0.5em 1.7em;
     background-color: #111;
     color: white;
+}
+
+#cancelUpload:active {
+    background-color: #272218;
 }
 
 @media screen and (min-width: 450px) {
