@@ -37,11 +37,11 @@ function renderPhotoThumbnails(pageSize = 12) {
             galleryElement.dataset.done = (data.done ? "true" : "false");
     
             // Populate the gallery
-            data.urls.forEach(url => {
+            data.files.forEach(file => {
                 let galleryItem = galleryItemTemplate.cloneNode(true);
 
-                galleryItem.querySelector('a').href = url;
-                galleryItem.querySelector('img').src = getThumbnailUrl(url);
+                galleryItem.querySelector('a').href = file.url;
+                galleryItem.querySelector('img').src = getThumbnailUrl(file.url);
                 
                 galleryElement.append(galleryItem);
 

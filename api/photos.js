@@ -20,11 +20,6 @@ async function getPhotos(req, res) {
 
     const container = blob.getContainerClient(containerName);
 
-     // Bring back the url for the large image
-    let blobOpts = {
-        prefix: 'large'
-    }
-
     // Pagination options
     let pageSizeFromQuery = parseInt(req.query.pageSize);
     let pageSize = ((pageSizeFromQuery > 0) ? pageSizeFromQuery : 2);
@@ -38,17 +33,21 @@ async function getPhotos(req, res) {
     // Get and parse the response data
     try {
 
-        let page = await container.listBlobsFlat(blobOpts).byPage(pageOpts).next();
+        let page = await container.listBlobsFlat().byPage(pageOpts).next();
 
         let items = page.value.segment.blobItems;
         let marker = page.value.continuationToken;
         let done = (marker === '');
 
-        let urls = [];
-        items.forEach(item => urls.push(containerUrl + item.name));
+        let files = [];
+
+        items.forEach(item => files.push({
+            url: containerUrl + item.name,
+            contentType: item.properties.contentType
+        }));
 
         res.send({
-            urls,
+            files,
             nextPage: marker,
             done
         });
