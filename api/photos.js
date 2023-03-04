@@ -78,9 +78,9 @@ function createPhotos(req, res) {
 
         const contentType = req.headers["content-type"];
         const originalFilename = req.query.originalFilename.split(".")[0];
-        const nowString = Date.now().toString();
+        const descendingIndex = Number.MAX_SAFE_INTEGER - Date.now();
         const extension = getExtensionFromContentType(contentType);
-        const bucketFilename = `${originalFilename}-${nowString}.${extension}`; 
+        const bucketFilename = `${descendingIndex}-${originalFilename}.${extension}`; 
 
         // Set up client for the blob we're about to create
         const blockBlob = new BlockBlobClient(
