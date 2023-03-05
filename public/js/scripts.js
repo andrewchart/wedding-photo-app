@@ -166,7 +166,10 @@ function showRefreshLink() {
 }
 
 function getThumbnailUrl(largeUrl) {
-    return largeUrl + '?q=48&&h=280';
+    const dpr = (window.devicePixelRatio || 1);
+    let h = 150 * dpr;
+    let max_w = 200 * dpr;
+    return largeUrl + `?q=44&fit=crop&h=${h}&max-w=${max_w}`;
 }
 
 function getLightboxUrl(largeUrl) {

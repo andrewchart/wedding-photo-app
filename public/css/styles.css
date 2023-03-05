@@ -90,12 +90,12 @@ input[type=file] {
 }
 
 #gallery li {
-    height: 24vh;
+    height: 35vw;
     flex-grow: 1;
 }
 
 #gallery li:last-child {
-    max-width: 66%;
+    max-width: 58%;
 }
 
 #gallery img {
@@ -230,5 +230,17 @@ input[type=file] {
 @media screen and (min-width: 450px) {
     .date {
         font-size: 1em;
+    }
+}
+
+@media screen and (min-width: 550px) {
+    #gallery li {
+        height: 25vw;
+    }
+}
+
+@media screen and (min-width: 900px) {
+    #gallery li {
+        height: 200px;
     }
 }
