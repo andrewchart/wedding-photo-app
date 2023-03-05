@@ -1,13 +1,14 @@
 // HTML Elements
 const galleryElement = document.getElementById('gallery');
 const spinnerElement = document.getElementById('spinner');
+const refreshLink = document.getElementById('refreshLink');
 const galleryItemTemplate = document.getElementById('galleryItem').content;
 const uploadFeedbackElement = document.getElementById('uploadFeedback');
 const uploadProgressElement = uploadFeedbackElement.querySelector('progress');
 const uploadMessageElement  = uploadFeedbackElement.querySelector('#uploadFeedbackMsg');
 
 
-function renderPhotoThumbnails(pageSize = 12) {
+function renderPhotoThumbnails(pageSize = 2) {
 
     let pageMarker = galleryElement.dataset.nextPage || "";
     
@@ -89,7 +90,7 @@ function loadMoreOnScroll() {
 
         if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
             if(window.fetchIsRunning) return;
-            renderPhotoThumbnails(2);
+            renderPhotoThumbnails();
         };
 
     }, 500);
@@ -98,7 +99,10 @@ function loadMoreOnScroll() {
 
 
 function refreshPhotoThumbnails() {
-
+    console.log('refresh');
+    galleryElement.replaceChildren();
+    galleryElement.dataset.done = "false";
+    renderPhotoThumbnails();
 }
 
 function uploadPhotos(event) {
@@ -167,8 +171,8 @@ function showRefreshLink() {
 
 function getThumbnailUrl(largeUrl) {
     const dpr = (window.devicePixelRatio || 1);
-    let h = 150 * dpr;
-    let max_w = 200 * dpr;
+    let h = 195 * dpr;
+    let max_w = 260 * dpr;
     return largeUrl + `?q=44&fit=crop&h=${h}&max-w=${max_w}`;
 }
 
@@ -200,7 +204,7 @@ function throttle(callback, time) {
 
 
 /* Event handlers */
-document.addEventListener('DOMContentLoaded', renderPhotoThumbnails(2));
+document.addEventListener('DOMContentLoaded', renderPhotoThumbnails());
 document.addEventListener('scroll', loadMoreOnScroll);
 
 document.getElementById('uploadBtn').onclick = () => {
@@ -214,4 +218,10 @@ document.getElementById('imageFiles').onchange = (event) => {
 document.getElementById('cancelUpload').onclick = (event) => {
     event.preventDefault();
     cancelUpload();
+}
+
+refreshLink.onclick = (event) => {
+    event.preventDefault();
+    refreshLink.classList.add('hidden');
+    refreshPhotoThumbnails();
 }
