@@ -173,7 +173,7 @@ function getThumbnailUrl(largeUrl) {
     const dpr = (window.devicePixelRatio || 1);
     let h = 195 * dpr;
     let max_w = 260 * dpr;
-    return largeUrl + `?q=44&fit=crop&h=${h}&max-w=${max_w}`;
+    return largeUrl + `?q=44&fit=crop&crop=top,faces&h=${h}&max-w=${max_w}`;
 }
 
 function getLightboxUrl(largeUrl) {
