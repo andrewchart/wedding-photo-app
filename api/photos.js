@@ -98,11 +98,10 @@ function createPhotos(req, res) {
         );
         
         req.on('end', () => {
-            res.status(201).send('Photos uploaded successfully!');
+            res.status(201).send({ message: "Photos uploaded successfully!" });
         });
         
     } catch(error) {
-        console.log(error);
         res.status(500).send({ error: "Could not upload photos." });
     }
    
@@ -110,7 +109,7 @@ function createPhotos(req, res) {
 
 // DELETE
 function deletePhotos(req, res) {
-    res.send('delete photos');
+    res.send({ message: "delete photos" });
 }
 
 

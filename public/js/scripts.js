@@ -112,41 +112,71 @@ function uploadPhotos(event) {
 
     if(numFiles === 0) return;
 
+    let fetches = [];
+
+    let outcomes = {
+        completed: 0,
+        failed: 0
+    }
+
+    let message = `${outcomes.completed} of ${numFiles} completed...`;
+    uploadMessageElement.textContent = message;
+
     showUploadFeedback();
 
-    for(let currFile = 0; currFile < files.length; currFile++) {
+    for(let i = 0; i < numFiles; i++) {
         
-        let message = `Uploading file ${currFile + 1} of ${numFiles}...`;
-        uploadMessageElement.innerHTML = message;
-        let originalFilename = encodeURIComponent(files[currFile].name);
+        let originalFilename = encodeURIComponent(files[i].name);
 
-        fetch(`/api/photos?originalFilename=${originalFilename}`, {
+        let upload = fetch(`/api/photos?originalFilename=${originalFilename}`, {
             method: 'POST',
-            body: files[currFile],
+            body: files[i],
             headers: {
-                "Content-Type": files[currFile].type
+                "Content-Type": files[i].type
             },
+        })
+        
+        .then((response) => {
+            if(Math.floor(response.status/100) === 2) {
+                console.log(`Upload of file ${i+1} to blob storage COMPLETED`);
+                outcomes['completed']++;
+                return response.json();
+            } else {
+                throw new Error(`Upload of file ${i+1} to blob storage failed`);
+            }
+        })
+        
+        .catch((error) => {
+            console.log(error);
+            outcomes['failed']++;
+        })
+        
+        .finally(() => {
+            let message = `${outcomes.completed} of ${numFiles} completed...`;
+            uploadMessageElement.textContent = message;
+            console.log(outcomes);
         });
 
+        fetches.push(upload);
+
     }
-    
-    
-    // .then(response => {
-    //     if(Math.floor(response.status/100) === 2) {
-    //         return response.json();
-    //     } else {
-    //         throw new Error('Fetch of photo urls from blob storage failed');
-    //     }
-    // })
 
-    // .then(data => {
-    //     if(data.status===500) throw new Error(data.error);
-    // })
+    // When all fetches are done...
+    Promise.all(fetches).then((responses) => {
+        
+        hideUploadFeedback();
+        
+        // Update message
+        let uploadCompleteMessage = `${outcomes.completed} files uploaded successfully.`;
+        uploadCompleteMessage += (outcomes.failed > 0) ? 
+            `<br>${outcomes.failed} files failed, please try again.` : '';
+        console.log(uploadCompleteMessage);
 
-    // .catch((error) => {
-    //     uploadMessageElement.innerHTML = `Could not upload your photos, please
-    //                                       close this window and try again`;
-    // });
+        //TODO: toast message to user
+
+        //TODO: renderPhotoThumbnails(outcomes.completed);
+
+    });
 
 }
 
