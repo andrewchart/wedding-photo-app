@@ -99,9 +99,9 @@ function loadMoreOnScroll() {
 
 
 function refreshPhotoThumbnails() {
-    console.log('refresh');
     galleryElement.replaceChildren();
     galleryElement.dataset.done = "false";
+    galleryElement.dataset.nextPage = "";
     renderPhotoThumbnails();
 }
 
