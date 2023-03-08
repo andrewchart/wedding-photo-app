@@ -185,7 +185,7 @@ input[type=file] {
     margin-top: 1.2em;
 }
 
-#uploadFeedback progress {
+#uploadFeedback .progress {
     width: 55%;
     height: 4.8px;
     display: inline-block;
@@ -194,7 +194,7 @@ input[type=file] {
     overflow: hidden;
 }
 
-#uploadFeedback progress::after {
+#uploadFeedback .progress::after {
     content: '';
     width: 49%;
     height: 4.8px;
