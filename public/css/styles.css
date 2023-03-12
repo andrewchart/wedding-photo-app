@@ -173,6 +173,7 @@ input[type=file] {
     width: 100%;
     background-color: rgba(0,0,0,0.86);
     color: #fff;
+    z-index: 9;
 }
 
 #uploadFeedback h4 {
@@ -208,12 +209,10 @@ input[type=file] {
   
 @keyframes progress {
     0% {
-        left: 0;
-        transform: translateX(-100%);
+        left: -100%;
     }
     100% {
         left: 100%;
-        transform: translateX(0%);
     }
 }
 
