@@ -227,6 +227,63 @@ input[type=file] {
     background-color: #272218;
 }
 
+#toast {
+    position: fixed;
+    top: 1em;
+    width: calc(100% - 3.6em);
+    min-height: 3em;
+    margin: 0 1em;
+    padding: 0.5em 0.8em;
+    border-radius: 0.4em;
+    overflow: hidden;
+    line-height: 150%;
+    background-color: #e9e9e9;
+    border: 2px solid #b28b0d;
+    transform: translateY(-200%);
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.25, 1.35);
+}
+
+#toast.active {
+    transform: translateY(0);
+}
+
+#toast .message {
+    position: relative;
+    z-index: 9;
+}
+
+#toast .timer,
+#toast .timer::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+    z-index: 8;
+}
+
+#toast .timer::after {
+    content: '';      
+    background: #ffe4d4;
+}
+
+#toast.active .timer::after {
+    animation: toastTimer 3s linear;
+}
+
+@keyframes toastTimer {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+
 @media screen and (min-width: 450px) {
     .date {
         font-size: 1em;

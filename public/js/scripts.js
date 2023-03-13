@@ -138,7 +138,6 @@ function uploadPhotos(event) {
         
         .then((response) => {
             if(Math.floor(response.status/100) === 2) {
-                console.log(`Upload of file ${i+1} to blob storage COMPLETED`);
                 outcomes['completed']++;
                 return response.json();
             } else {
@@ -147,14 +146,13 @@ function uploadPhotos(event) {
         })
         
         .catch((error) => {
-            console.log(error);
+            console.error(error);
             outcomes['failed']++;
         })
         
         .finally(() => {
             let message = `${outcomes.completed} of ${numFiles} completed...`;
             uploadMessageElement.textContent = message;
-            console.log(outcomes);
         });
 
         fetches.push(upload);
@@ -162,20 +160,33 @@ function uploadPhotos(event) {
     }
 
     // When all fetches are done...
+    let uploadCompleteMessage = '';
+
     Promise.all(fetches).then((responses) => {
         
-        hideUploadFeedback();
-        
         // Update message
-        let uploadCompleteMessage = `${outcomes.completed} files uploaded successfully.`;
+        uploadCompleteMessage += (outcomes.completed > 0) ? 
+            `✅ ${outcomes.completed} files uploaded successfully. ` : '';
+
         uploadCompleteMessage += (outcomes.failed > 0) ? 
-            `<br>${outcomes.failed} files failed, please try again.` : '';
-        console.log(uploadCompleteMessage);
+            `❌ ${outcomes.failed} files failed, please try again.` : '';
 
-        //TODO: toast message to user
+        if(outcomes.completed > 0) {
+            //TODO: renderPhotoThumbnails(outcomes.completed);
+        }
 
-        //TODO: renderPhotoThumbnails(outcomes.completed);
-
+    })
+    
+    .catch((error) => {
+        console.error(error);
+    })
+    
+    .finally(() => {
+        // Prevents flashing and ensures modal actually shows on Safari
+        setTimeout(() => {
+            hideUploadFeedback();
+            toastMessage(uploadCompleteMessage);
+        }, 1500);
     });
 
 }
@@ -220,6 +231,18 @@ function hideUploadFeedback() {
     document.getElementById('uploadFeedback').classList.add('hidden');
 }
 
+function toastMessage(message) {
+    const toast = document.getElementById('toast');
+
+    toast.querySelector('.message').textContent = message;
+
+    toast.classList.add('active');
+
+    setTimeout(() => {
+        toast.classList.remove('active');
+    }, 3000);
+}
+
 // Scroll event throttling
 var throttleTimer;
 
@@ -237,9 +260,9 @@ function throttle(callback, time) {
 document.addEventListener('DOMContentLoaded', renderPhotoThumbnails());
 document.addEventListener('scroll', loadMoreOnScroll);
 
-document.getElementById('uploadBtn').onclick = () => {
+document.getElementById('uploadBtn').addEventListener('click', () => {
     document.getElementById('imageFiles').click();
-}
+});
 
 document.getElementById('imageFiles').onchange = (event) => {
     uploadPhotos(event);
