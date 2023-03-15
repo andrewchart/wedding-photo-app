@@ -67,10 +67,12 @@ input[type=button] {
     padding: 0.8em 2em;
     font-size: 1.4em;
     color: #493300;
+    cursor: pointer;
 }
 
 input[type=button]:active {
     background-color: #fff3da;
+    padding: 0.8em 2em;
 }
 
 input[type=file] {
