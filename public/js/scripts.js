@@ -262,6 +262,7 @@ document.addEventListener('scroll', loadMoreOnScroll);
 
 document.getElementById('uploadBtn').addEventListener('click', (event) => {
     event.preventDefault();
+    console.log(event);
     window.countClicks = window.countClicks || 0;
     window.countClicks++;
     document.getElementById('clicks').textContent = `Click count: ${window.countClicks}`;
