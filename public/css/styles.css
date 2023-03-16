@@ -57,8 +57,7 @@ h3 {
     font-weight: 600;
 }
 
-button, 
-input[type=button] { 
+button { 
     margin-top: 1.3em;
     font-family: Mulish, Helvetica, Arial, sans-serif;
     border: 2px solid #b28b0d;
@@ -70,7 +69,7 @@ input[type=button] {
     cursor: pointer;
 }
 
-input[type=button]:active {
+button:active {
     background-color: #fff3da;
     padding: 0.8em 2em;
 }

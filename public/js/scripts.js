@@ -260,7 +260,8 @@ function throttle(callback, time) {
 document.addEventListener('DOMContentLoaded', renderPhotoThumbnails());
 document.addEventListener('scroll', loadMoreOnScroll);
 
-document.getElementById('uploadBtn').addEventListener('click', () => {
+document.getElementById('uploadBtn').addEventListener('click', (event) => {
+    event.preventDefault();
     document.getElementById('imageFiles').click();
 });
 
