@@ -7,7 +7,6 @@ const uploadFeedbackElement = document.getElementById('uploadFeedback');
 const uploadProgressElement = uploadFeedbackElement.querySelector('progress');
 const uploadMessageElement  = uploadFeedbackElement.querySelector('#uploadFeedbackMsg');
 
-
 function renderPhotoThumbnails(pageSize = 2) {
 
     let pageMarker = galleryElement.dataset.nextPage || "";
@@ -83,7 +82,6 @@ function renderPhotoThumbnails(pageSize = 2) {
 
 };
 
-
 function loadMoreOnScroll() {
 
     throttle(() => {
@@ -96,7 +94,6 @@ function loadMoreOnScroll() {
     }, 500);
     
 }
-
 
 function refreshPhotoThumbnails() {
     galleryElement.replaceChildren();
@@ -196,7 +193,6 @@ function cancelUpload() {
     hideUploadFeedback();
 }
 
-
 /* Utility functions */
 function setRefreshMessages(message, action) {
     document.querySelector('#refreshLink .message').innerHTML = message;
@@ -255,17 +251,12 @@ function throttle(callback, time) {
     }, time);
 };
 
-
 /* Event handlers */
 document.addEventListener('DOMContentLoaded', renderPhotoThumbnails());
 document.addEventListener('scroll', loadMoreOnScroll);
 
 document.getElementById('uploadBtn').addEventListener('click', (event) => {
     event.preventDefault();
-    console.log(event);
-    window.countClicks = window.countClicks || 0;
-    window.countClicks++;
-    document.getElementById('clicks').textContent = `Click count: ${window.countClicks}`;
     document.getElementById('imageFiles').click();
 });
 
