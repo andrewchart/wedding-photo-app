@@ -7,11 +7,17 @@ const uploadFeedbackElement = document.getElementById('uploadFeedback');
 const uploadProgressElement = uploadFeedbackElement.querySelector('progress');
 const uploadMessageElement  = uploadFeedbackElement.querySelector('#uploadFeedbackMsg');
 
-function renderPhotoThumbnails(pageSize = 2) {
+function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend = false) {
 
-    let pageMarker = galleryElement.dataset.nextPage || "";
+    let pageMarker;
+
+    if(typeof specificPage === "undefined") {
+        pageMarker = galleryElement.dataset.nextPage || "";
+    } else {
+        pageMarker = specificPage;
+    }
     
-    if(galleryElement.dataset.done === "true") return;
+    if(galleryElement.dataset.done === "true" && prepend === false) return;
 
     // Start spinner & mark window to say a fetch is in progress
     spinnerElement.classList.remove('hidden');
@@ -30,7 +36,12 @@ function renderPhotoThumbnails(pageSize = 2) {
         .then(data => {
 
             // Set the next page marker for the next reload
-            galleryElement.dataset.nextPage = data.nextPage;
+            // unless the caller asked for a specific page
+            // in which case the gallery's "nextPage" remains 
+            // the same.
+            if(typeof specificPage === "undefined") {
+                galleryElement.dataset.nextPage = data.nextPage;
+            }
 
             // If there is no more data, stop further reloads
             // until the user specifies
@@ -44,7 +55,11 @@ function renderPhotoThumbnails(pageSize = 2) {
                 galleryItem.querySelector('a').href = getLightboxUrl(file.url);
                 galleryItem.querySelector('img').src = getThumbnailUrl(file.url);
                 
-                galleryElement.append(galleryItem);
+                if(prepend) {
+                    galleryElement.prepend(galleryItem);
+                } else {
+                    galleryElement.append(galleryItem);
+                }
 
             });
 
@@ -169,7 +184,9 @@ function uploadPhotos(event) {
             `❌ ${outcomes.failed} files failed, please try again.` : '';
 
         if(outcomes.completed > 0) {
-            //TODO: renderPhotoThumbnails(outcomes.completed);
+            setTimeout(() => {
+                renderPhotoThumbnails(outcomes.completed, "", true);
+            }, 4000);
         }
 
     })
