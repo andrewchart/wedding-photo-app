@@ -1,11 +1,14 @@
 // HTML Elements
 const galleryElement = document.getElementById('gallery');
 const spinnerElement = document.getElementById('spinner');
-const refreshLink = document.getElementById('refreshLink');
+const refreshLinkElement = document.getElementById('refreshLink');
 const galleryItemTemplate = document.getElementById('galleryItem').content;
+const uploadBtnElement = document.getElementById('uploadBtn');
+const imageFilesElement = document.getElementById('imageFiles');
 const uploadFeedbackElement = document.getElementById('uploadFeedback');
 const uploadProgressElement = uploadFeedbackElement.querySelector('progress');
 const uploadMessageElement  = uploadFeedbackElement.querySelector('#uploadFeedbackMsg');
+const toastElement = document.getElementById('toast');
 const cancelUploadElement = document.getElementById('cancelUpload');
 
 function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend = false) {
@@ -227,7 +230,6 @@ function setRefreshMessages(message, action) {
 }
 
 function showRefreshLink() {
-    let refreshLinkElement = document.getElementById('refreshLink');
     if(refreshLinkElement && refreshLinkElement.classList.contains('hidden')) {
         refreshLinkElement.classList.remove('hidden');
     }
@@ -246,23 +248,22 @@ function getLightboxUrl(largeUrl) {
 
 function showUploadFeedback() {
     document.body.classList.add('locked');
-    document.getElementById('uploadFeedback').classList.remove('hidden');
+    uploadFeedbackElement.classList.remove('hidden');
 }
 
 function hideUploadFeedback() {
     document.body.classList.remove('locked');
-    document.getElementById('uploadFeedback').classList.add('hidden');
+    uploadFeedbackElement.classList.add('hidden');
 }
 
 function toastMessage(message) {
-    const toast = document.getElementById('toast');
+    
+    toastElement.querySelector('.message').textContent = message;
 
-    toast.querySelector('.message').textContent = message;
-
-    toast.classList.add('active');
+    toastElement.classList.add('active');
 
     setTimeout(() => {
-        toast.classList.remove('active');
+        toastElement.classList.remove('active');
     }, 3000);
 }
 
@@ -282,17 +283,17 @@ function throttle(callback, time) {
 document.addEventListener('DOMContentLoaded', renderPhotoThumbnails);
 document.addEventListener('scroll', loadMoreOnScroll);
 
-document.getElementById('uploadBtn').addEventListener('click', (event) => {
+uploadBtnElement.addEventListener('click', (event) => {
     event.preventDefault();
-    document.getElementById('imageFiles').click();
+    imageFilesElement.click();
 });
 
-document.getElementById('imageFiles').onchange = (event) => {
+imageFilesElement.onchange = (event) => {
     uploadPhotos(event);
 }
 
-refreshLink.onclick = (event) => {
+refreshLinkElement.onclick = (event) => {
     event.preventDefault();
-    refreshLink.classList.add('hidden');
+    refreshLinkElement.classList.add('hidden');
     refreshPhotoThumbnails();
 }
