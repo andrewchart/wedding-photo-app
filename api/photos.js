@@ -95,10 +95,10 @@ function createPhotos(req, res) {
             8 * 1024 * 1024, //bufferSize: 8MB (Default)
             2,               //maxConcurrency
             { blobHTTPHeaders: { blobContentType: contentType } }
-        );
-        
-        req.on('end', () => {
+        ).then(() => {
             res.status(201).send({ message: "Photos uploaded successfully!" });
+        }).catch((error) => {
+            res.status(400).send({ error: "Could not upload photos." });
         });
         
     } catch(error) {
