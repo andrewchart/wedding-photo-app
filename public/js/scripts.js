@@ -6,6 +6,7 @@ const galleryItemTemplate = document.getElementById('galleryItem').content;
 const uploadFeedbackElement = document.getElementById('uploadFeedback');
 const uploadProgressElement = uploadFeedbackElement.querySelector('progress');
 const uploadMessageElement  = uploadFeedbackElement.querySelector('#uploadFeedbackMsg');
+const cancelUploadElement = document.getElementById('cancelUpload');
 
 function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend = false) {
 
@@ -125,6 +126,7 @@ function uploadPhotos(event) {
     if(numFiles === 0) return;
 
     let fetches = [];
+    let controllers = [];
 
     let outcomes = {
         completed: 0,
@@ -140,17 +142,22 @@ function uploadPhotos(event) {
         
         let originalFilename = encodeURIComponent(files[i].name);
 
+        let controller = new AbortController();
+
         let upload = fetch(`/api/photos?originalFilename=${originalFilename}`, {
             method: 'POST',
             body: files[i],
             headers: {
                 "Content-Type": files[i].type
             },
+            signal: controller.signal
         })
         
         .then((response) => {
             if(Math.floor(response.status/100) === 2) {
                 outcomes['completed']++;
+                let message = `${outcomes.completed} of ${numFiles} completed...`;
+                uploadMessageElement.textContent = message;
                 return response.json();
             } else {
                 throw new Error(`Upload of file ${i+1} to blob storage failed`);
@@ -158,18 +165,18 @@ function uploadPhotos(event) {
         })
         
         .catch((error) => {
-            console.error(error);
             outcomes['failed']++;
-        })
-        
-        .finally(() => {
-            let message = `${outcomes.completed} of ${numFiles} completed...`;
-            uploadMessageElement.textContent = message;
+            if(error.name == 'AbortError') return;
+            console.error(error);
         });
 
         fetches.push(upload);
+        controllers.push(controller);
 
     }
+
+    // User cancellation of fetches
+    cancelUploadElement.onclick = cancelUpload(controllers);
 
     // When all fetches are done...
     let uploadCompleteMessage = '';
@@ -205,9 +212,12 @@ function uploadPhotos(event) {
 
 }
 
-function cancelUpload() {
-    // TODO: Check for running fetches
-    hideUploadFeedback();
+function cancelUpload(controllers) {
+    return (event) => {
+        event.preventDefault();
+        uploadMessageElement.textContent = 'Cancelling...';
+        controllers.forEach(controller => controller.abort());
+    }
 }
 
 /* Utility functions */
@@ -279,11 +289,6 @@ document.getElementById('uploadBtn').addEventListener('click', (event) => {
 
 document.getElementById('imageFiles').onchange = (event) => {
     uploadPhotos(event);
-}
-
-document.getElementById('cancelUpload').onclick = (event) => {
-    event.preventDefault();
-    cancelUpload();
 }
 
 refreshLink.onclick = (event) => {
