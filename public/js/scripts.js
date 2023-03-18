@@ -37,15 +37,15 @@ function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend =
 
             // Set the next page marker for the next reload
             // unless the caller asked for a specific page
-            // in which case the gallery's "nextPage" remains 
-            // the same.
+            // in which case the gallery's "nextPage" and 
+            // "done" state remains untouched.
             if(typeof specificPage === "undefined") {
                 galleryElement.dataset.nextPage = data.nextPage;
-            }
 
-            // If there is no more data, stop further reloads
-            // until the user specifies
-            galleryElement.dataset.done = (data.done ? "true" : "false");
+                // If there is no more data, stop further reloads
+                // until the user specifies
+                galleryElement.dataset.done = (data.done ? "true" : "false");
+            }
     
             // Populate the gallery
             data.files.forEach(file => {
@@ -269,7 +269,7 @@ function throttle(callback, time) {
 };
 
 /* Event handlers */
-document.addEventListener('DOMContentLoaded', renderPhotoThumbnails());
+document.addEventListener('DOMContentLoaded', renderPhotoThumbnails);
 document.addEventListener('scroll', loadMoreOnScroll);
 
 document.getElementById('uploadBtn').addEventListener('click', (event) => {
