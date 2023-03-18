@@ -59,14 +59,17 @@ async function getPhotos(req, res) {
 
         });
 
-        res.send({
+        res.status(200).send({
             files,
             nextPage: marker,
             done
         });
 
     } catch(error) {
-        res.status(500).send({ error: "Could not retrieve photos" });
+        res.status(500).send({
+            message: 'Internal Server Error',
+            details: 'Could not retrieve photos.'
+        });
     }
     
 }
@@ -96,13 +99,22 @@ function createPhotos(req, res) {
             2,               //maxConcurrency
             { blobHTTPHeaders: { blobContentType: contentType } }
         ).then(() => {
-            res.status(201).send({ message: "Photos uploaded successfully!" });
+            res.status(201).send({ 
+                message: 'OK',
+                details: 'Photos uploaded successfully!' 
+            });
         }).catch((error) => {
-            res.status(400).send({ error: "Could not upload photos." });
+            res.status(400).send({ 
+                message: 'Bad Request', 
+                details: 'Could not upload photos.' 
+            });
         });
         
     } catch(error) {
-        res.status(500).send({ error: "Could not upload photos." });
+        res.status(500).send({ 
+            message: 'Internal Server Error', 
+            details: 'Could not upload photos.' 
+        });
     }
    
 }
