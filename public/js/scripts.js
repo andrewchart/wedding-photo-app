@@ -281,7 +281,9 @@ function throttle(callback, time) {
 };
 
 /* Event handlers */
-document.addEventListener('DOMContentLoaded', renderPhotoThumbnails);
+document.addEventListener('DOMContentLoaded', () => {
+    renderPhotoThumbnails();
+});
 document.addEventListener('scroll', loadMoreOnScroll);
 window.addEventListener('load', initLightbox);
 
