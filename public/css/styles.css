@@ -57,7 +57,7 @@ h3 {
     font-weight: 600;
 }
 
-button { 
+.button { 
     margin-top: 1.3em;
     font-family: Mulish, Helvetica, Arial, sans-serif;
     border: 2px solid #b28b0d;
@@ -69,7 +69,7 @@ button {
     cursor: pointer;
 }
 
-button:active {
+.button:active {
     background-color: #fff3da;
     padding: 0.8em 2em;
 }

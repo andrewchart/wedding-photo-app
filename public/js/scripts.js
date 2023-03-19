@@ -97,6 +97,7 @@ function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend =
         .finally(() => {
             spinnerElement.classList.add('hidden');
             window.fetchIsRunning = false;
+            lightbox.reload();
         });
 
 };
@@ -282,6 +283,7 @@ function throttle(callback, time) {
 /* Event handlers */
 document.addEventListener('DOMContentLoaded', renderPhotoThumbnails);
 document.addEventListener('scroll', loadMoreOnScroll);
+window.addEventListener('load', initLightbox);
 
 uploadBtnElement.addEventListener('click', (event) => {
     event.preventDefault();
@@ -296,4 +298,11 @@ refreshLinkElement.onclick = (event) => {
     event.preventDefault();
     refreshLinkElement.classList.add('hidden');
     refreshPhotoThumbnails();
+}
+
+/* Lightbox */
+function initLightbox() {
+    window.lightbox = GLightbox({
+        selector: '#gallery li a'
+    });
 }

@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/styles.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:200,600">
+        <link rel="stylesheet" href="css/glightbox.min.css">
         <link rel="shortcut icon" href="images/app-icon.png" type="image/x-icon" />
     </head>
     <body>
@@ -22,13 +23,13 @@
             <p id="clicks"></p>
 
             <form id="uploadForm" method="post" action="/api/photos">
-                <button id="uploadBtn">Upload Photos</button>
+                <button class="button" id="uploadBtn">Upload Photos</button>
                 <input id="imageFiles" type="file" accept="image/*, image/heic, video/*" multiple />
                 <div id="uploadFeedback" class="hidden">
                     <h4>Uploading</h4>
                     <div class="progress"></div>
                     <p id="uploadFeedbackMsg"></p>
-                    <button id="cancelUpload">Cancel</button>
+                    <button class="button" id="cancelUpload">Cancel</button>
                 </div>
             </form>
 
@@ -53,5 +54,6 @@
         </template>
 
         <script src="js/scripts.js" defer></script>
+        <script src="js/glightbox.min.js" defer></script>
     </body>
 </html>
