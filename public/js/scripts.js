@@ -55,9 +55,29 @@ function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend =
             data.files.forEach(file => {
                 
                 let galleryItem = galleryItemTemplate.cloneNode(true);
+                let linkElement = galleryItem.querySelector('a');
+                let contentType = file.contentType.split('/')[0];
+                let media;
 
-                galleryItem.querySelector('a').href = getLightboxUrl(file.url);
-                galleryItem.querySelector('img').src = getThumbnailUrl(file.url);
+                switch(contentType) {
+                    case 'image': 
+                        media = new Image();
+                        media.src = getThumbnailUrl(file.url);
+                        break;
+                    
+                    case 'video':
+                        media = document.createElement('video');
+                        media.src = file.url;
+                        break;
+
+                    default:
+                        console.warn('Unrecognised media. Will not display in gallery.');
+                        return;
+                }
+
+                galleryItem.querySelector('li').classList.add(contentType);
+                linkElement.href = getLightboxUrl(file.url);
+                linkElement.appendChild(media);
                 
                 if(prepend) {
                     galleryElement.prepend(galleryItem);
@@ -305,6 +325,7 @@ refreshLinkElement.onclick = (event) => {
 /* Lightbox */
 function initLightbox() {
     window.lightbox = GLightbox({
-        selector: '#gallery li a'
+        selector: '#gallery li a',
+        dragToleranceY: 40
     });
 }
