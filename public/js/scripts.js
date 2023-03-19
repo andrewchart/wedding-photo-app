@@ -121,7 +121,7 @@ function refreshPhotoThumbnails() {
     renderPhotoThumbnails();
 }
 
-function uploadPhotos(event) {
+async function uploadPhotos(event) {
     
     const files = event.target.files;
     const numFiles = files.length;
@@ -145,9 +145,19 @@ function uploadPhotos(event) {
         
         let originalFilename = encodeURIComponent(files[i].name);
 
+        // Send original image dimensions to server
+        try {
+            let { w, h } = await getImageDimensions(files[i]);
+            console.log( w, h );
+        } catch(error) {
+            console.warn(error.message);
+            let w = 0;
+            let h = 0;
+        }
+
         let controller = new AbortController();
 
-        let upload = fetch(`/api/photos?originalFilename=${originalFilename}`, {
+        let upload = fetch(`/api/photos?originalFilename=${originalFilename}&w=${w}&h=${h}`, {
             method: 'POST',
             body: files[i],
             headers: {
@@ -265,6 +275,34 @@ function toastMessage(message) {
     setTimeout(() => {
         toastElement.classList.remove('active');
     }, 3000);
+}
+
+function getImageDimensions(localFile) {
+
+    return new Promise((resolve, reject) => {
+
+        const reader = new FileReader();
+        reader.readAsDataURL(localFile);
+
+        reader.onload = (event) => {
+            let image = new Image();
+            image.src = event.target.result;
+        
+            image.onload = function() {
+
+                w = this.naturalWidth;
+                h = this.naturalHeight;
+
+                if(isNaN(w) || isNaN(h)) {
+                    reject(new Error('Could not get image dimensions'));
+                }
+
+                resolve({ w, h });
+            }
+        }
+
+    });
+
 }
 
 // Scroll event throttling
