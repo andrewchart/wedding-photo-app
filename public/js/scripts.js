@@ -281,6 +281,7 @@ function throttle(callback, time) {
 
 /* Event handlers */
 document.addEventListener('DOMContentLoaded', renderPhotoThumbnails);
+window.addEventListener('load', initLightbox);
 document.addEventListener('scroll', loadMoreOnScroll);
 
 uploadBtnElement.addEventListener('click', (event) => {
@@ -296,4 +297,18 @@ refreshLinkElement.onclick = (event) => {
     event.preventDefault();
     refreshLinkElement.classList.add('hidden');
     refreshPhotoThumbnails();
+}
+
+/* Lightbox */
+function initLightbox() {
+
+    const lightbox = new PhotoSwipeLightbox({
+      gallery: '#gallery',
+      children: 'li',
+      showHideAnimationType: 'zoom',
+      pswpModule: PhotoSwipe 
+    });
+  
+    return lightbox.init();  
+  
 }

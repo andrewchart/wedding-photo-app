@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/styles.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:200,600">
+        <link rel="stylesheet" href="css/photoswipe.css">
         <link rel="shortcut icon" href="images/app-icon.png" type="image/x-icon" />
     </head>
     <body>
@@ -49,9 +50,11 @@
         </div>
         
         <template id="galleryItem">
-            <li><a><img /></a></li>
+            <li><a data-cropped="true"><img /></a></li>
         </template>
 
         <script src="js/scripts.js" defer></script>
+        <script src="js/photoswipe.umd.min.js" defer></script>
+        <script src="js/photoswipe-lightbox.umd.min.js" defer></script>
     </body>
 </html>
