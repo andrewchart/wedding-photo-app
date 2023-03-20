@@ -1,4 +1,3 @@
-// HTML Elements
 const galleryElement = document.getElementById('gallery');
 const spinnerElement = document.getElementById('spinner');
 const refreshLinkElement = document.getElementById('refreshLink');
@@ -12,7 +11,6 @@ const toastElement = document.getElementById('toast');
 const cancelUploadElement = document.getElementById('cancelUpload');
 
 function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend = false) {
-
     let pageMarker;
 
     if(typeof specificPage === "undefined") {
@@ -68,6 +66,7 @@ function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend =
                     case 'video':
                         media = document.createElement('video');
                         media.src = file.url;
+                        media.preload = "metadata";
                         break;
 
                     default:
@@ -119,11 +118,9 @@ function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend =
             window.fetchIsRunning = false;
             lightbox.reload();
         });
-
 };
 
 function loadMoreOnScroll() {
-
     throttle(() => {
 
         if(window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
@@ -132,7 +129,6 @@ function loadMoreOnScroll() {
         };
 
     }, 500);
-    
 }
 
 function refreshPhotoThumbnails() {
@@ -142,109 +138,6 @@ function refreshPhotoThumbnails() {
     renderPhotoThumbnails();
 }
 
-function uploadPhotos(event) {
-    
-    const files = event.target.files;
-    const numFiles = files.length;
-
-    if(numFiles === 0) return;
-
-    let fetches = [];
-    let controllers = [];
-
-    let outcomes = {
-        completed: 0,
-        failed: 0
-    }
-
-    let message = `${outcomes.completed} of ${numFiles} completed...`;
-    uploadMessageElement.textContent = message;
-
-    showUploadFeedback();
-
-    for(let i = 0; i < numFiles; i++) {
-        
-        let originalFilename = encodeURIComponent(files[i].name);
-
-        let controller = new AbortController();
-
-        let upload = fetch(`/api/photos?originalFilename=${originalFilename}`, {
-            method: 'POST',
-            body: files[i],
-            headers: {
-                "Content-Type": files[i].type
-            },
-            signal: controller.signal
-        })
-        
-        .then((response) => {
-            if(Math.floor(response.status/100) === 2) {
-                outcomes['completed']++;
-                let message = `${outcomes.completed} of ${numFiles} completed...`;
-                uploadMessageElement.textContent = message;
-                return response.json();
-            } else {
-                throw new Error(`Upload of file ${i+1} to blob storage failed`);
-            }
-        })
-        
-        .catch((error) => {
-            outcomes['failed']++;
-            if(error.name == 'AbortError') return;
-            console.error(error);
-        });
-
-        fetches.push(upload);
-        controllers.push(controller);
-
-    }
-
-    // User cancellation of fetches
-    cancelUploadElement.onclick = cancelUpload(controllers);
-
-    // When all fetches are done...
-    let uploadCompleteMessage = '';
-
-    Promise.all(fetches).then((responses) => {
-        
-        // Update message
-        uploadCompleteMessage += (outcomes.completed > 0) ? 
-            `✅ ${outcomes.completed} files uploaded successfully. ` : '';
-
-        uploadCompleteMessage += (outcomes.failed > 0) ? 
-            `❌ ${outcomes.failed} files failed, please try again.` : '';
-
-        if(outcomes.completed > 0) {
-            setTimeout(() => {
-                renderPhotoThumbnails(outcomes.completed, "", true);
-            }, 4000);
-        }
-
-    })
-    
-    .catch((error) => {
-        console.error(error);
-    })
-    
-    .finally(() => {
-        // Prevents flashing and ensures modal actually shows on Safari
-        setTimeout(() => {
-            hideUploadFeedback();
-            toastMessage(uploadCompleteMessage);
-        }, 1500);
-    });
-
-}
-
-function cancelUpload(controllers) {
-    return (event) => {
-        event.preventDefault();
-        uploadMessageElement.textContent = 'Cancelling...';
-        controllers.forEach(controller => controller.abort());
-    }
-}
-
-/* Utility functions */
 function setRefreshMessages(message, action) {
     document.querySelector('#refreshLink .message').innerHTML = message;
     document.querySelector('#refreshLink .action').innerHTML = action;
@@ -263,8 +156,129 @@ function getThumbnailUrl(largeUrl) {
     return largeUrl + `?q=44&fit=crop&crop=top,faces&h=${h}&max-w=${max_w}`;
 }
 
-function getLightboxUrl(largeUrl) {
-    return largeUrl + '?q=65&h=1080';
+function uploadFiles(event) {
+    const files = event.target.files;
+    const numFiles = files.length;
+
+    if(numFiles === 0) return;
+
+    let fetches = [];
+    let controllers = [];
+
+    let outcomes = {
+        completed: 0,
+        failed: 0
+    }
+
+    updateUploadFeedback(`0 of ${numFiles} completed...`);
+
+    showUploadFeedback();
+
+    for(let i = 0; i < numFiles; i++) {
+
+        let { 
+            upload,
+            controller 
+        } = queueFileUpload(files[i]);
+
+        fetches.push(upload);
+
+        controllers.push(controller);
+
+        upload.then((success) => {
+            if(success) {
+                outcomes["completed"]++;
+                updateUploadFeedback(`${outcomes.completed} of ${numFiles} completed...`);
+            } else {
+                outcomes["failed"]++;
+            }
+        });
+
+    }
+
+    // User cancellation of fetches
+    cancelUploadElement.onclick = cancelUpload(controllers);
+
+    // When all fetches are done...
+    Promise.all(fetches).then(() => {
+        if(outcomes.completed > 0) {
+            setTimeout(() => {
+                renderPhotoThumbnails(outcomes.completed, "", true);
+            }, 4000);
+        }
+    })
+    
+    .catch((error) => {
+        console.error(error);
+    })
+    
+    .finally(() => {
+        // Prevents flashing and ensures modal actually shows on Safari
+        setTimeout(() => {
+            hideUploadFeedback();
+            toastMessage( getUploadCompleteMessage(outcomes) );
+        }, 1500);
+    });
+}
+
+function queueFileUpload(file) {
+    let originalFilename = encodeURIComponent(file.name);
+
+    let controller = new AbortController();
+
+    let upload = fetch(`/api/photos?originalFilename=${originalFilename}`, {
+        method: 'POST',
+        body: file,
+        headers: {
+            "Content-Type": file.type
+        },
+        signal: controller.signal
+    })
+    
+    .then((response) => {
+        if(Math.floor(response.status/100) === 2) {
+            return true;
+        } else {
+            throw new Error(`Upload of file ${originalFilename} to blob storage failed`);
+        }
+    })
+    
+    .catch((error) => {
+        if(error.name != 'AbortError') {
+            console.error(error);
+        }
+        return false;
+    });
+
+    return { 
+        upload,
+        controller
+    }
+}
+
+function cancelUpload(controllers) {
+    return (event) => {
+        event.preventDefault();
+        uploadMessageElement.textContent = 'Cancelling...';
+        controllers.forEach(controller => controller.abort());
+    }
+}
+
+function getUploadCompleteMessage(outcomes) {
+        let uploadCompleteMessage = '';
+
+        // Update message
+        uploadCompleteMessage += (outcomes.completed > 0) ? 
+            `✅ ${outcomes.completed} files uploaded successfully. ` : '';
+
+        uploadCompleteMessage += (outcomes.failed > 0) ? 
+            `❌ ${outcomes.failed} files failed, please try again.` : '';
+
+        return uploadCompleteMessage;
+}
+
+function updateUploadFeedback(message = '') {
+    uploadMessageElement.textContent = message;
 }
 
 function showUploadFeedback() {
@@ -288,7 +302,19 @@ function toastMessage(message) {
     }, 3000);
 }
 
-// Scroll event throttling
+function getLightboxUrl(largeUrl) {
+    return largeUrl + '?q=65&h=1080';
+}
+
+/* Event handlers */
+document.addEventListener('DOMContentLoaded', () => {
+    renderPhotoThumbnails();
+});
+
+window.addEventListener('load', initLightbox);
+
+document.addEventListener('scroll', loadMoreOnScroll);
+
 var throttleTimer;
 
 function throttle(callback, time) {
@@ -300,20 +326,13 @@ function throttle(callback, time) {
     }, time);
 };
 
-/* Event handlers */
-document.addEventListener('DOMContentLoaded', () => {
-    renderPhotoThumbnails();
-});
-document.addEventListener('scroll', loadMoreOnScroll);
-window.addEventListener('load', initLightbox);
-
 uploadBtnElement.addEventListener('click', (event) => {
     event.preventDefault();
     imageFilesElement.click();
 });
 
 imageFilesElement.onchange = (event) => {
-    uploadPhotos(event);
+    uploadFiles(event);
 }
 
 refreshLinkElement.onclick = (event) => {
