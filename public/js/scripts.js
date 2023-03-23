@@ -339,6 +339,3 @@ refreshLinkElement.onclick = (event) => {
     refreshLinkElement.classList.add('hidden');
     refreshPhotoThumbnails();
 }
-
-    });
-}
