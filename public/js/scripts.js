@@ -76,6 +76,7 @@ function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend =
 
                 galleryItem.querySelector('li').classList.add(contentType);
                 linkElement.href = getLightboxUrl(file.url);
+                linkElement.dataset.type = contentType;
                 linkElement.appendChild(media);
                 
                 if(prepend) {
@@ -116,7 +117,7 @@ function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend =
         .finally(() => {
             spinnerElement.classList.add('hidden');
             window.fetchIsRunning = false;
-            lightbox.reload();
+            refreshFsLightbox();
         });
 };
 
@@ -311,8 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPhotoThumbnails();
 });
 
-window.addEventListener('load', initLightbox);
-
 document.addEventListener('scroll', loadMoreOnScroll);
 
 var throttleTimer;
@@ -341,10 +340,5 @@ refreshLinkElement.onclick = (event) => {
     refreshPhotoThumbnails();
 }
 
-/* Lightbox */
-function initLightbox() {
-    window.lightbox = GLightbox({
-        selector: '#gallery li a',
-        dragToleranceY: 40
     });
 }
