@@ -23,7 +23,7 @@ async function getPhotos(req, res) {
 
     // Pagination options
     let pageSizeFromQuery = parseInt(req.query.pageSize);
-    let pageSize = ((pageSizeFromQuery > 0) ? pageSizeFromQuery : 2);
+    let pageSize = ((pageSizeFromQuery > 0) ? pageSizeFromQuery : 1);
     let pageMarker = req.query.pageMarker || undefined;
 
     let pageOpts = { 

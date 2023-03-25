@@ -9,7 +9,7 @@ const uploadMessageElement  = uploadFeedbackElement.querySelector('#uploadFeedba
 const toastElement = document.getElementById('toast');
 const cancelUploadElement = document.getElementById('cancelUpload');
 
-function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend = false) {
+function renderPhotoThumbnails(pageSize = 8, specificPage = undefined, prepend = false) {
     let pageMarker;
 
     if(typeof specificPage === "undefined") {
