@@ -110,7 +110,7 @@ input[type=file] {
     vertical-align: bottom;
 }
 
-#gallery li.video::after {
+#gallery li:has([data-type="customVideo"])::after {
     display: block;
     position: absolute;
     top: 4px;

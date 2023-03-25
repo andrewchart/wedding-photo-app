@@ -5,7 +5,6 @@ const galleryItemTemplate = document.getElementById('galleryItem').content;
 const uploadBtnElement = document.getElementById('uploadBtn');
 const imageFilesElement = document.getElementById('imageFiles');
 const uploadFeedbackElement = document.getElementById('uploadFeedback');
-const uploadProgressElement = uploadFeedbackElement.querySelector('progress');
 const uploadMessageElement  = uploadFeedbackElement.querySelector('#uploadFeedbackMsg');
 const toastElement = document.getElementById('toast');
 const cancelUploadElement = document.getElementById('cancelUpload');
@@ -50,23 +49,36 @@ function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend =
             }
     
             // Populate the gallery
-            data.files.forEach(file => {
+            data.files.forEach((file, i) => {
                 
-                let galleryItem = galleryItemTemplate.cloneNode(true);
-                let linkElement = galleryItem.querySelector('a');
                 let contentType = file.contentType.split('/')[0];
-                let media;
+                let lightboxContentType = (contentType === 'video' ? 
+                    'customVideo' : contentType);
+
+                let galleryItem = galleryItemTemplate.cloneNode(true);
+                
+                let linkElement = galleryItem.querySelector('a');
+
+                let thumb = new Image();
+                thumb.src = getThumbnailUrl(file);
+
+                let videoTemplate, media;
 
                 switch(contentType) {
-                    case 'image': 
-                        media = new Image();
-                        media.src = getThumbnailUrl(file.url);
+                    case 'image':
+                        linkElement.href = getLightboxUrl(file);
                         break;
-                    
-                    case 'video':
+
+                    case 'video': 
+                        videoTemplate = document.createElement('template');
                         media = document.createElement('video');
-                        media.src = file.url;
-                        media.preload = "metadata";
+                        media.src = getLightboxUrl(file);
+                        media.controls = true;
+                        media.poster = 'https://via.placeholder.com/640x360'
+                        media.preload = 'none';
+                        media.id = `video${i}`;
+                        linkElement.href = `#video${i}`; 
+                        videoTemplate.appendChild(media);
                         break;
 
                     default:
@@ -74,10 +86,9 @@ function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend =
                         return;
                 }
 
-                galleryItem.querySelector('li').classList.add(contentType);
-                linkElement.href = getLightboxUrl(file.url);
-                linkElement.dataset.type = contentType;
-                linkElement.appendChild(media);
+                linkElement.dataset.type = lightboxContentType;
+                linkElement.appendChild(thumb);
+                if(videoTemplate) linkElement.appendChild(videoTemplate); 
                 
                 if(prepend) {
                     galleryElement.prepend(galleryItem);
@@ -117,7 +128,7 @@ function renderPhotoThumbnails(pageSize = 2, specificPage = undefined, prepend =
         .finally(() => {
             spinnerElement.classList.add('hidden');
             window.fetchIsRunning = false;
-            refreshFsLightbox();
+            refreshLightbox();
         });
 };
 
@@ -150,11 +161,20 @@ function showRefreshLink() {
     }
 }
 
-function getThumbnailUrl(largeUrl) {
-    const dpr = (window.devicePixelRatio || 1);
-    let h = 195 * dpr;
-    let max_w = 260 * dpr;
-    return largeUrl + `?q=44&fit=crop&crop=top,faces&h=${h}&max-w=${max_w}`;
+function getThumbnailUrl(file) {
+
+    const { url, contentType } = file; 
+
+    switch(contentType.split('/')[0]) {
+        case 'image':
+            const dpr = (window.devicePixelRatio || 1);
+            let h = 195 * dpr;
+            let max_w = 260 * dpr;
+            return url + `?q=44&fit=crop&crop=top,faces&h=${h}&max-w=${max_w}`;
+        
+        default:
+            return "";
+    }
 }
 
 function uploadFiles(event) {
@@ -303,8 +323,22 @@ function toastMessage(message) {
     }, 3000);
 }
 
-function getLightboxUrl(largeUrl) {
-    return largeUrl + '?q=65&h=1080';
+function getLightboxUrl(file) {
+    let { url, contentType } = file;
+    if(contentType.split('/')[0] === 'image') {
+        url += '?q=65&h=1080';
+    }
+    return url
+}
+
+function refreshLightbox() {
+    if(window.refreshFsLightbox) {
+        refreshFsLightbox();
+        fsLightbox.props.loadOnlyCurrentSource = true;
+        fsLightbox.props.onSlideChange = () => {
+            console.log(document.querySelectorAll('video'));
+        }
+    }
 }
 
 /* Event handlers */
