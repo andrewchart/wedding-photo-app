@@ -74,7 +74,7 @@ function renderPhotoThumbnails(pageSize = 8, specificPage = undefined, prepend =
                         media = document.createElement('video');
                         media.src = getLightboxUrl(file);
                         media.controls = true;
-                        media.poster = 'https://via.placeholder.com/640x360'
+                        media.poster = 'https://via.placeholder.com/640x360';
                         media.preload = 'none';
                         media.id = `video${i}`;
                         linkElement.href = `#video${i}`; 
@@ -245,6 +245,16 @@ function uploadFiles(event) {
 function queueFileUpload(file) {
     let originalFilename = encodeURIComponent(file.name);
 
+    // Generate a thumbnail image for videos
+    if(file.type.split('/')[0] === 'video') {
+        captureVideoThumbnail(file).then((blob) => {
+            uploadVideoThumbnail(blob);
+        }).catch(error => {
+            console.warn('Video thumbnail not created.', error);
+            return false;
+        });
+    }
+    
     let controller = new AbortController();
 
     let upload = fetch(`/api/photos?originalFilename=${originalFilename}`, {
@@ -339,6 +349,51 @@ function refreshLightbox() {
             console.log(document.querySelectorAll('video'));
         }
     }
+}
+
+function captureVideoThumbnail(file) {
+    
+    return new Promise((resolve, reject) => {
+
+        const seekTo = 0.001;
+        
+        const tempVideo = document.createElement('video');
+        tempVideo.setAttribute('src', URL.createObjectURL(file));
+        tempVideo.load();
+
+        // Seek to first frame on load
+        tempVideo.addEventListener('loadedmetadata', () => {
+            if (tempVideo.duration < seekTo) {
+                reject("Video contains no frames.");
+                return;
+            }
+
+            // Delay seeking or else 'seeked' event won't fire on Safari
+            setTimeout(() => {
+              tempVideo.currentTime = seekTo;
+            }, 200);
+        });
+
+        // Extract thumbnail on seek
+        tempVideo.addEventListener('seeked', () => {
+            const tempCanvas = document.createElement("canvas");
+            tempCanvas.width = tempVideo.videoWidth;
+            tempCanvas.height = tempVideo.videoHeight;
+            
+            const ctx = tempCanvas.getContext("2d");
+            ctx.drawImage(tempVideo, 0, 0, tempCanvas.width, tempCanvas.height);
+            
+            ctx.canvas.toBlob(
+                blob => resolve(blob),
+                "image/jpeg",
+                0.6 // Quality
+            );
+        });
+    });
+}
+
+function uploadVideoThumbnail(blob) {
+    console.log(blob);
 }
 
 /* Event handlers */
