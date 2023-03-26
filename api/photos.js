@@ -80,10 +80,9 @@ function createPhotos(req, res) {
     try {
 
         const contentType = req.headers["content-type"];
-        const originalFilename = req.query.originalFilename.split(".")[0];
-        const descendingIndex = Number.MAX_SAFE_INTEGER - Date.now();
         const extension = getExtensionFromContentType(contentType);
-        const bucketFilename = `${descendingIndex}-${originalFilename}.${extension}`; 
+        const nakedFilename = req.query.targetFilename.split(".")[0];
+        const bucketFilename = `${nakedFilename}.${extension}`; 
 
         // Set up client for the blob we're about to create
         const blockBlob = new BlockBlobClient(
@@ -101,12 +100,12 @@ function createPhotos(req, res) {
         ).then(() => {
             res.status(201).send({ 
                 message: 'OK',
-                details: 'Photos uploaded successfully!' 
+                details: 'Files uploaded successfully!' 
             });
         }).catch((error) => {
             res.status(400).send({ 
                 message: 'Bad Request', 
-                details: 'Could not upload photos.' 
+                details: 'Could not upload files.' 
             });
         });
         
