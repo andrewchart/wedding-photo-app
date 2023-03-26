@@ -74,7 +74,7 @@ function renderPhotoThumbnails(pageSize = 8, specificPage = undefined, prepend =
                         media = document.createElement('video');
                         media.src = getLightboxUrl(file);
                         media.controls = true;
-                        media.poster = 'https://via.placeholder.com/640x360';
+                        media.poster = 'https://via.placeholder.com/360x640';
                         media.preload = 'none';
                         media.id = `video${i}`;
                         linkElement.href = `#video${i}`; 
@@ -165,15 +165,22 @@ function getThumbnailUrl(file) {
 
     const { url, contentType } = file; 
 
+    const dpr = (window.devicePixelRatio || 1);
+    const h = 195 * dpr;
+    const max_w = 260 * dpr;
+
+    const queryString = `?q=44&fit=crop&crop=top,faces&h=${h}&max-w=${max_w}`;
+
     switch(contentType.split('/')[0]) {
         case 'image':
-            const dpr = (window.devicePixelRatio || 1);
-            let h = 195 * dpr;
-            let max_w = 260 * dpr;
-            return url + `?q=44&fit=crop&crop=top,faces&h=${h}&max-w=${max_w}`;
-        
+            return url + queryString;
+       
+        case 'video': 
+            const re = /([^/]*)\.[^/]*$/gi;
+            return url.replace(re, "video_thumbnails/$1.jpg") + queryString;
+
         default:
-            return "";
+            return ""; //TODO placeholder
     }
 }
 
@@ -197,10 +204,13 @@ function uploadFiles(event) {
 
     for(let i = 0; i < numFiles; i++) {
 
+        const descendingIndex = Number.MAX_SAFE_INTEGER - Date.now();
+        let targetFilename = `${descendingIndex}-${files[i].name}`;
+
         let { 
             upload,
             controller 
-        } = queueFileUpload(files[i]);
+        } = queueFileUpload(files[i], targetFilename);
 
         fetches.push(upload);
 
@@ -215,6 +225,15 @@ function uploadFiles(event) {
             }
         });
 
+        // Also upload a thumbnail image for videos
+        if(files[i].type.split('/')[0] === 'video') {
+            captureVideoThumbnail(files[i]).then((blob) => {
+                queueFileUpload(blob, `video_thumbnails/${targetFilename}`);
+            }).catch(error => {
+                console.warn('Video thumbnail creation failed.', error);
+                return false;
+            });
+        }
     }
 
     // User cancellation of fetches
@@ -242,22 +261,12 @@ function uploadFiles(event) {
     });
 }
 
-function queueFileUpload(file) {
-    let originalFilename = encodeURIComponent(file.name);
-
-    // Generate a thumbnail image for videos
-    if(file.type.split('/')[0] === 'video') {
-        captureVideoThumbnail(file).then((blob) => {
-            uploadVideoThumbnail(blob);
-        }).catch(error => {
-            console.warn('Video thumbnail not created.', error);
-            return false;
-        });
-    }
+function queueFileUpload(file, targetFilename) {
+    targetFilename = encodeURIComponent(targetFilename);
     
     let controller = new AbortController();
 
-    let upload = fetch(`/api/photos?originalFilename=${originalFilename}`, {
+    let upload = fetch(`/api/photos?targetFilename=${targetFilename}`, {
         method: 'POST',
         body: file,
         headers: {
@@ -270,7 +279,7 @@ function queueFileUpload(file) {
         if(Math.floor(response.status/100) === 2) {
             return true;
         } else {
-            throw new Error(`Upload of file ${originalFilename} to blob storage failed`);
+            throw new Error(`Upload of file ${targetFilename} to blob storage failed`);
         }
     })
     
@@ -390,10 +399,6 @@ function captureVideoThumbnail(file) {
             );
         });
     });
-}
-
-function uploadVideoThumbnail(blob) {
-    console.log(blob);
 }
 
 /* Event handlers */
