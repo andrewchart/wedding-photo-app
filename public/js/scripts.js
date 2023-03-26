@@ -75,7 +75,7 @@ function renderPhotoThumbnails(pageSize = 8, specificPage = undefined, prepend =
                         media = document.createElement('video');
                         media.src = getLightboxUrl(file);
                         media.controls = true;
-                        media.poster = 'https://via.placeholder.com/360x640';
+                        media.poster = getThumbnailUrl(file);
                         media.preload = 'none';
                         media.id = `video${i}`;
                         linkElement.href = `#video${i}`; 
@@ -176,7 +176,12 @@ function getThumbnailUrl(file) {
 }
 
 function replaceThumbnailWithPlaceholder(event) {
-    return event.target.src = 'images/placeholder.png';
+    event.target.src = '/images/placeholder.png';
+
+    // We also need to replace the video poster if the thumbnail is broken
+    if(event.target.parentElement.dataset.type === 'customVideo') {
+        event.target.parentElement.querySelector('video').poster = '/images/placeholder.png';
+    }
 }
 
 function uploadFiles(event) {
