@@ -162,25 +162,15 @@ function showRefreshLink() {
 }
 
 function getThumbnailUrl(file) {
-
-    const { url, contentType } = file; 
-
     const dpr = (window.devicePixelRatio || 1);
     const h = 195 * dpr;
     const max_w = 260 * dpr;
-
     const queryString = `?q=44&fit=crop&crop=top,faces&h=${h}&max-w=${max_w}`;
 
-    switch(contentType.split('/')[0]) {
-        case 'image':
-            return url + queryString;
-       
-        case 'video': 
-            const re = /([^/]*)\.[^/]*$/gi;
-            return url.replace(re, "video_thumbnails/$1.jpg") + queryString;
-
-        default:
-            return ""; //TODO placeholder
+    if(file.thumbnail && file.thumbnail.length > 0) {
+        return file.thumbnail + queryString;
+    } else {
+        return 'images/placeholder.png';
     }
 }
 

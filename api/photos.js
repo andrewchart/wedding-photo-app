@@ -49,11 +49,11 @@ async function getPhotos(req, res) {
             // If the content is an image and image CDN url is specified, return
             // the CDN-ized url in the response. Otherwise just return the blob url
             const baseUrl = (contentType.split('/')[0] === 'image' && imageCdnUrl) ? 
-                imageCdnUrl : 
-                containerUrl;
+                imageCdnUrl : containerUrl;
 
             files.push({
                 url: `${baseUrl}/${item.name}`,
+                thumbnail: getThumbnailUrl(item),
                 contentType
             });
 
@@ -146,6 +146,30 @@ function getExtensionFromContentType(contentType) {
 
 }
 
+function getThumbnailUrl(item) {
+    const baseUrl = (imageCdnUrl || containerUrl);
+    const videoThumbs = { base: 'video_thumbnails', extension: 'jpg' };
+    let url;
+
+    switch(item.properties.contentType.split('/')[0]) {
+        case 'image':
+            url = `${baseUrl}/${item.name}`;
+            break;
+            
+        case 'video': 
+            let thumbFilename = item.name.replace(
+                /[^\.]*$/, //capture everything after last '.' in filename
+                videoThumbs.extension
+            );
+            url = `${baseUrl}/${videoThumbs.base}/${thumbFilename}`;
+            break;
+
+        default: 
+            break;
+    }
+
+    return url;
+}
   
 module.exports = { 
     getPhotos,
