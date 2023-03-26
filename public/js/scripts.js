@@ -210,7 +210,7 @@ function uploadFiles(event) {
         let { 
             upload,
             controller 
-        } = queueFileUpload(files[i], targetFilename);
+        } = queueFileUpload(files[i], `original/${targetFilename}`);
 
         fetches.push(upload);
 

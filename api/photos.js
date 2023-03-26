@@ -26,6 +26,7 @@ async function getPhotos(req, res) {
     let pageSize = ((pageSizeFromQuery > 0) ? pageSizeFromQuery : 1);
     let pageMarker = req.query.pageMarker || undefined;
 
+    let blobOpts = { prefix: 'original' };
     let pageOpts = { 
         maxPageSize: pageSize,
         continuationToken: pageMarker  // undefined for first page
@@ -33,8 +34,7 @@ async function getPhotos(req, res) {
 
     // Get and parse the response data
     try {
-
-        let page = await container.listBlobsFlat().byPage(pageOpts).next();
+        let page = await container.listBlobsFlat(blobOpts).byPage(pageOpts).next();
 
         let items = page.value.segment.blobItems;
         let marker = page.value.continuationToken;
@@ -71,7 +71,6 @@ async function getPhotos(req, res) {
             details: 'Could not retrieve photos.'
         });
     }
-    
 }
 
 // POST
@@ -160,8 +159,11 @@ function getThumbnailUrl(item) {
             let thumbFilename = item.name.replace(
                 /[^\.]*$/, //capture everything after last '.' in filename
                 videoThumbs.extension
+            ).replace(
+                /^original\//gi, //remove the filename's 'original' prefix
+                videoThumbs.base + '/'
             );
-            url = `${baseUrl}/${videoThumbs.base}/${thumbFilename}`;
+            url = `${baseUrl}/${thumbFilename}`;
             break;
 
         default: 
