@@ -61,6 +61,7 @@ function renderPhotoThumbnails(pageSize = 8, specificPage = undefined, prepend =
 
                 let thumb = new Image();
                 thumb.src = getThumbnailUrl(file);
+                thumb.onerror = replaceThumbnailWithPlaceholder;
 
                 let videoTemplate, media;
 
@@ -172,6 +173,10 @@ function getThumbnailUrl(file) {
     } else {
         return 'images/placeholder.png';
     }
+}
+
+function replaceThumbnailWithPlaceholder(event) {
+    return event.target.src = 'images/placeholder.png';
 }
 
 function uploadFiles(event) {
