@@ -119,7 +119,39 @@ function createPhotos(req, res) {
 
 // DELETE
 function deletePhotos(req, res) {
-    res.send({ message: "delete photos" });
+
+    let outcomes = {
+        completed: [],
+        failed: [req.body.files] 
+    }
+
+    if(req.body.password !== process.env.MANAGE_PASSWORD) {
+        res.status(401).send({ 
+            message: 'Unauthorized', 
+            details: 'Password does not match.', 
+            outcomes    
+        });
+    } else {
+        try {
+            if(outcomes.completed < req.body.files.length) {
+                throw new Error('Not all files were deleted');
+            }
+
+            res.status(200).send({ 
+                message: 'OK',
+                details: 'All photos deleted',
+                outcomes
+            });
+        } catch(error) {
+            res.status(500).send({ 
+                message: 'Internal Server Error',
+                details: 'Not all files were deleted',
+                outcomes
+            });
+        }
+        
+    }
+    
 }
 
 

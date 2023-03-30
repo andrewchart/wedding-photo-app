@@ -4,6 +4,7 @@ const express = require('express');
 const compression = require('compression');
 const app = express();
 app.use(compression());
+app.use(express.json());
 const port = process.env.PORT || 3000;
 
 
@@ -12,6 +13,14 @@ const photosAPI = require('./api/photos.js');
 
 /* Serve static files from the public folder */
 app.use(express.static('public'));
+
+app.get('/manage/', (req, res) => {
+    res.sendFile(__dirname + '/public/manage.html');
+});
+
+app.post('/manage/', (req, res) => {
+    res.sendFile(__dirname + '/public/manage.html');
+});
 
 /* API health check */
 app.get('/api', (req, res) => {

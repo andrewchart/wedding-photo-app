@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Manage photos ≫ Annika & Andy's Wedding</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="css/manage.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:200,600">
+        <link rel="shortcut icon" href="images/app-icon.png" type="image/x-icon" />
+    </head>
+    <body>
+        <header>
+            <h1>Manage Photos</h1>
+        </header>
+        <main>
+            <form id="managePhotosForm" method="post" action="/manage">
+                <input 
+                    type="text" 
+                    name="username" 
+                    value="admin" 
+                    autocomplete="username" 
+                />
+                <label for="managePassword">
+                    Enter password to delete selected items<br />
+                </label>
+                <input 
+                        type="password" 
+                        name="password" 
+                        id="managePassword" 
+                        autocomplete="current-password"
+                    />
+                <input
+                    type="submit" 
+                    value="Delete selected" 
+                    id="manageDeleteButton"
+                    class="manageDelete button" 
+                    disabled 
+                />
+            </form>
+        </main>
+        
+        <div id="toast">
+            <div class="timer"></div>
+            <div class="message"></div>
+        </div>
+
+        <script src="js/manage.js"></script>
+    </body>
+</html>
