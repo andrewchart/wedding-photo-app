@@ -336,7 +336,6 @@ function hideUploadFeedback() {
 }
 
 function toastMessage(message) {
-    
     toastElement.querySelector('.message').textContent = message;
 
     toastElement.classList.add('active');
@@ -365,7 +364,6 @@ function refreshLightbox() {
 }
 
 function captureVideoThumbnail(file) {
-    
     return new Promise((resolve, reject) => {
 
         const seekTo = 0.001;
