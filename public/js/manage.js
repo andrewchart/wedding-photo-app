@@ -1,7 +1,6 @@
 const managePhotosForm = document.getElementById('managePhotosForm');
 const managePassword = document.getElementById('managePassword');
 const manageDeleteButton = document.getElementById('manageDeleteButton');
-const toastElement = document.getElementById('toast');
 
 function deleteFiles(files = [], password) {
     return fetch(`/api/photos`, {
@@ -62,14 +61,4 @@ function processOutcomes(outcomes) {
     }
 
     return message;
-}
-
-function toastMessage(message) {
-    toastElement.querySelector('.message').textContent = message;
-
-    toastElement.classList.add('active');
-
-    setTimeout(() => {
-        toastElement.classList.remove('active');
-    }, 3000);
 }
