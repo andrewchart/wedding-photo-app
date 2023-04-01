@@ -61,6 +61,16 @@ function renderPhotoThumbnails(
 
                 let galleryItem = galleryItemTemplate.cloneNode(true);
                 
+                // For the manage page, tag each gallery element with the 
+                // storage bucket file path
+                let bucketPathElement = galleryItem.querySelector('.bucketPath');
+
+                if(bucketPathElement) {
+                    let bucketPath = new URL(file.url).pathname.replace(/^\/wedding-photo-app/, '');
+                    bucketPathElement.innerText = bucketPath;
+                    galleryItem.querySelector('li').dataset.bucketPath = bucketPath;
+                }
+                
                 let linkElement = galleryItem.querySelector('a');
 
                 let thumb = new Image();
@@ -336,7 +346,7 @@ function hideUploadFeedback() {
 }
 
 function toastMessage(message) {
-    toastElement.querySelector('.message').textContent = message;
+    toastElement.querySelector('.message').innerHTML = message;
 
     toastElement.classList.add('active');
 

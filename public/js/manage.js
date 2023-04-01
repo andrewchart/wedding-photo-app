@@ -19,17 +19,26 @@ function deleteFiles(files = [], password) {
 managePhotosForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    let files = ['blah', 'blah'];
+    let files = getSelectedFiles();
+    if(files.length === 0) return toastMessage('No files selected.');
 
     deleteFiles(files, managePassword.value).then((response) => {
 
         return response.json().then((body) => {
-            if(response.status === 200) {
-                toastMessage(`✅ ${files.length} files successfully deleted!`)
+            if(response.status === 401) {
+                return toastMessage(`
+                    ❌ ${body.outcomes.failed.length} files 
+                     were not deleted. Incorrect password.
+                `);
+            }
+
+            toastMessage(processOutcomes(body.outcomes));
+
+            if(body.outcomes.completed > 0) { // something suceeded...
+                refreshPhotoThumbnails();
+                updateDeleteButton();
                 const creds = new PasswordCredential(managePhotosForm);
                 return navigator.credentials.store(creds);
-            } else {
-                toastMessage(processOutcomes(body.outcomes));
             }
         });
         
@@ -47,17 +56,16 @@ function processOutcomes(outcomes) {
     let message = '';
     
     if(outcomes.completed.length > 0) {
-        message += `✅ ${outcomes.completed.length} files successfully deleted. `;
+        message += `✅ ${outcomes.completed.length} files successfully deleted.<br />`;
     }
 
     if(outcomes.failed.length > 0) {
-        message += `❌ The following 
-            ${outcomes.failed.length} files 
-            were not deleted: `;
+        message += `
+            ❌ ${outcomes.failed.length} files 
+            were not deleted:`;
 
         for(let i = outcomes.failed.length - 1; i >= 0; i--) {
-            message += `'${outcomes.failed[i]}'`;
-            if(i > 0) message += ", ";
+            message += `<pre>${outcomes.failed[i]}</pre>`;
         }
     }
 
@@ -67,6 +75,25 @@ function processOutcomes(outcomes) {
 manageGallery.addEventListener('click', (event) => {
     if(event.target.id === 'gallery') return;
     event.target.closest('li').classList.toggle('selected');
+    updateDeleteButton();
     event.stopPropagation();
     event.preventDefault();
 });
+
+function getSelectedFiles() { 
+    const selectedElements = document.querySelectorAll('#gallery li.selected');
+    let selectedFiles = [];
+
+    selectedElements.forEach((element) => {
+        selectedFiles.push(element.dataset.bucketPath);
+    });
+
+    return selectedFiles;
+}
+
+function updateDeleteButton() {
+    let numSelected = getSelectedFiles().length;
+    let message = 'Delete selected';
+    if(numSelected > 0) message += ` (${numSelected})`;
+    manageDeleteButton.innerText = message;
+}

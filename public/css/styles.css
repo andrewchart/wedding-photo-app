@@ -264,6 +264,7 @@ input[type=file] {
 #toast .message {
     position: relative;
     z-index: 9;
+    overflow: hidden;
 }
 
 #toast .timer,

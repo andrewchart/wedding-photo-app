@@ -32,13 +32,9 @@
                         id="managePassword" 
                         autocomplete="current-password"
                     />
-                <input
-                    type="submit" 
-                    value="Delete selected" 
-                    id="manageDeleteButton"
-                    class="manageDelete button" 
-                    disabled 
-                />
+                <button id="manageDeleteButton" class="manageDelete button" disabled>
+                    Delete selected
+                </button>
             </form>
 
             <ul 
@@ -63,7 +59,10 @@
         </div>
 
         <template id="galleryItem">
-            <li><a></a></li>
+            <li>
+                <a></a>
+                <p class="bucketPath"></p>
+            </li>
         </template>
 
         <script src="js/scripts.js"></script>

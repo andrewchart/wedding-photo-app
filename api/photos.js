@@ -122,7 +122,7 @@ function deletePhotos(req, res) {
 
     let outcomes = {
         completed: [],
-        failed: [req.body.files] 
+        failed: [...req.body.files]
     }
 
     if(req.body.password !== process.env.MANAGE_PASSWORD) {

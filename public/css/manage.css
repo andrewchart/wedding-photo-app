@@ -12,6 +12,10 @@ input[name=username] {
     display: none;
 }
 
+h1 {
+    text-align: center;
+}
+
 #managePassword { 
     margin-top: calc(0.6em + 4px);
     padding: 0.5em 0.3em;
@@ -19,6 +23,8 @@ input[name=username] {
 }
 
 .manageDelete {
+    display: block;
+    width: 80%;
     margin: 0.6em auto 2em;
     border: 2px solid #ffb4b4;
     border-radius: 0.3em;
@@ -44,6 +50,7 @@ input[name=username] {
 }
 
 #gallery.manageGallery li {
+    height: 45vw;
     width: 44%;
     padding: 2%;
     margin: 1%;
@@ -51,8 +58,25 @@ input[name=username] {
     border: 1px solid #ddd;
 }
 
+#gallery.manageGallery li img {
+    height: 66%;
+    max-height: 66%;
+    max-width: 100%;
+}
+
+#gallery.manageGallery li .bucketPath {
+    max-height: 29%;
+    padding: 0 0.3em;
+    font-size: 0.6em;
+    text-align: left;
+    word-wrap: break-word;
+    overflow: hidden;
+    margin: 5% 0;
+}
+
 #gallery.manageGallery li.selected {
     background-color: #eb1d1d;
+    color: #ffdbdb;
 }
 
 #gallery.manageGallery li.selected img {
@@ -61,8 +85,19 @@ input[name=username] {
 
 @media screen and (min-width: 550px) {
     #gallery.manageGallery li {
+        height: 27vw;
         width: 27%;
         padding: 2%;
         margin: 1%;
+    }
+
+    #gallery.manageGallery li .bucketPath {
+        font-size: 0.8em;
+    }
+}
+
+@media screen and (min-width: 900px) {
+    #gallery.manageGallery li {
+        height: 300px;
     }
 }
