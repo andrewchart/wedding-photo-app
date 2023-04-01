@@ -41,7 +41,14 @@
                 />
             </form>
 
-            <ul id="gallery" data-next-page="" data-done="false" data-page-size="20"></ul>
+            <ul 
+                id="gallery" 
+                class="manageGallery" 
+                data-next-page="" 
+                data-done="false" 
+                data-page-size="20">
+            </ul>
+
             <div id="spinner" class="hidden"><div></div></div>
             
             <p id="refreshLink" class="hidden">
@@ -56,7 +63,7 @@
         </div>
 
         <template id="galleryItem">
-            <li><a data-fslightbox></a></li>
+            <li><a></a></li>
         </template>
 
         <script src="js/scripts.js"></script>

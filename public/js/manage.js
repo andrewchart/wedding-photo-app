@@ -1,6 +1,7 @@
 const managePhotosForm = document.getElementById('managePhotosForm');
 const managePassword = document.getElementById('managePassword');
 const manageDeleteButton = document.getElementById('manageDeleteButton');
+const manageGallery = document.getElementById('gallery');
 
 function deleteFiles(files = [], password) {
     return fetch(`/api/photos`, {
@@ -62,3 +63,10 @@ function processOutcomes(outcomes) {
 
     return message;
 }
+
+manageGallery.addEventListener('click', (event) => {
+    if(event.target.id === 'gallery') return;
+    event.target.closest('li').classList.toggle('selected');
+    event.stopPropagation();
+    event.preventDefault();
+});

@@ -19,7 +19,7 @@ input[name=username] {
 }
 
 .manageDelete {
-    margin-top: 0.6em;
+    margin: 0.6em auto 2em;
     border: 2px solid #ffb4b4;
     border-radius: 0.3em;
     background-color: #be1717;
@@ -37,4 +37,32 @@ input[name=username] {
 .manageDelete:active {
     background-color: #cf4343;
     padding: 0.3em 0.8em;
+}
+
+#gallery.manageGallery { 
+    gap: 0;
+}
+
+#gallery.manageGallery li {
+    width: 44%;
+    padding: 2%;
+    margin: 1%;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+}
+
+#gallery.manageGallery li.selected {
+    background-color: #eb1d1d;
+}
+
+#gallery.manageGallery li.selected img {
+    filter: grayscale(80%) opacity(50%);
+}
+
+@media screen and (min-width: 550px) {
+    #gallery.manageGallery li {
+        width: 27%;
+        padding: 2%;
+        margin: 1%;
+    }
 }
