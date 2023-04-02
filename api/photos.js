@@ -122,7 +122,7 @@ function deletePhotos(req, res) {
 
     let outcomes = {
         completed: [],
-        failed: [...req.body.files]
+        failed: [...req.body.files] // assume files haven't been deleted
     }
 
     if(req.body.password !== process.env.MANAGE_PASSWORD) {
@@ -132,8 +132,44 @@ function deletePhotos(req, res) {
             outcomes    
         });
     } else {
+        let container;
+        let deleteOperations = [];
+
         try {
-            if(outcomes.completed < req.body.files.length) {
+            // Set up client for the blob service and container
+            const blob = new BlobServiceClient(
+                accountUrl,
+                new DefaultAzureCredential()
+            );
+
+            container = blob.getContainerClient(containerName);
+        } catch(error) {
+            res.status(500).send({ 
+                message: 'Internal Server Error',
+                details: 'Not all files were deleted',
+                outcomes
+            });
+        }
+
+        // Loop through each file and move from 'failed' to 
+        // 'completed' if the DELETE succeeds.
+        outcomes.failed.forEach((file, i) => {
+            let deleteOp = container.deleteBlob(file).then((result) => {
+                if(!result.errorCode) {
+                    outcomes.completed.push(file);
+                    delete outcomes.failed[i];
+                }
+            }).catch((error) => {
+                // Do nothing - the delete failed
+            });
+
+            deleteOperations.push(deleteOp);
+        });
+
+        Promise.all(deleteOperations).then(() => {
+            outcomes.failed = outcomes.failed.flat();
+
+            if(outcomes.completed.length < req.body.files.length) {
                 throw new Error('Not all files were deleted');
             }
 
@@ -142,16 +178,14 @@ function deletePhotos(req, res) {
                 details: 'All photos deleted',
                 outcomes
             });
-        } catch(error) {
+        }).catch((error) => {
             res.status(500).send({ 
                 message: 'Internal Server Error',
                 details: 'Not all files were deleted',
                 outcomes
             });
-        }
-        
+        });   
     }
-    
 }
 
 

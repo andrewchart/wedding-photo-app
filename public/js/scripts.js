@@ -66,7 +66,9 @@ function renderPhotoThumbnails(
                 let bucketPathElement = galleryItem.querySelector('.bucketPath');
 
                 if(bucketPathElement) {
-                    let bucketPath = new URL(file.url).pathname.replace(/^\/wedding-photo-app/, '');
+                    let bucketPath = new URL(file.url).pathname
+                        .replace(/^(\/wedding-photo-app)?\/original/, 'original');
+                        
                     bucketPathElement.innerText = bucketPath;
                     galleryItem.querySelector('li').dataset.bucketPath = bucketPath;
                 }

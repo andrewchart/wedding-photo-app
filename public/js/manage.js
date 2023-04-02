@@ -34,8 +34,8 @@ managePhotosForm.addEventListener('submit', (event) => {
 
             toastMessage(processOutcomes(body.outcomes));
 
-            if(body.outcomes.completed > 0) { // something suceeded...
-                refreshPhotoThumbnails();
+            if(body.outcomes.completed.length > 0) { // something suceeded...
+                setTimeout(refreshPhotoThumbnails, 4000);
                 updateDeleteButton();
                 const creds = new PasswordCredential(managePhotosForm);
                 return navigator.credentials.store(creds);
