@@ -22,6 +22,9 @@ managePhotosForm.addEventListener('submit', (event) => {
     let files = getSelectedFiles();
     if(files.length === 0) return toastMessage('No files selected.');
 
+    manageDeleteButton.disabled = true;
+    manageDeleteButton.innerText = "Please wait...";
+
     deleteFiles(files, managePassword.value).then((response) => {
 
         return response.json().then((body) => {
@@ -35,8 +38,11 @@ managePhotosForm.addEventListener('submit', (event) => {
             toastMessage(processOutcomes(body.outcomes));
 
             if(body.outcomes.completed.length > 0) { // something suceeded...
-                setTimeout(refreshPhotoThumbnails, 4000);
-                updateDeleteButton();
+                setTimeout(() => {
+                    refreshPhotoThumbnails();
+                    updateDeleteButton();
+                }, 4000);
+                
                 if("PasswordCredential" in window) {
                     const creds = new PasswordCredential(managePhotosForm);
                     return navigator.credentials.store(creds);
@@ -46,13 +52,13 @@ managePhotosForm.addEventListener('submit', (event) => {
         
     }).catch((error) => {
         toastMessage(error.message);
+    }).finally(() => {
+        updateDeleteButton();
+        setDeleteButtonState();
     });
 });
 
-managePassword.addEventListener('input', () => {
-    manageDeleteButton.disabled = (managePassword.value.length > 0) ?
-        false : true;
-});
+managePassword.addEventListener('input', setDeleteButtonState);
 
 function processOutcomes(outcomes) {
     let message = '';
@@ -98,4 +104,9 @@ function updateDeleteButton() {
     let message = 'Delete selected';
     if(numSelected > 0) message += ` (${numSelected})`;
     manageDeleteButton.innerText = message;
+}
+
+function setDeleteButtonState() {
+    manageDeleteButton.disabled = (managePassword.value.length > 0) ?
+        false : true;
 }
