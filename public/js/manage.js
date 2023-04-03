@@ -37,8 +37,10 @@ managePhotosForm.addEventListener('submit', (event) => {
             if(body.outcomes.completed.length > 0) { // something suceeded...
                 setTimeout(refreshPhotoThumbnails, 4000);
                 updateDeleteButton();
-                const creds = new PasswordCredential(managePhotosForm);
-                return navigator.credentials.store(creds);
+                if("PasswordCredential" in window) {
+                    const creds = new PasswordCredential(managePhotosForm);
+                    return navigator.credentials.store(creds);
+                }
             }
         });
         
