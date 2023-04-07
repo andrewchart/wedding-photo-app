@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const { BlobServiceClient, BlockBlobClient } = require("@azure/storage-blob");
 const { DefaultAzureCredential } = require("@azure/identity");
+const transcodeVideo = require('../modules/transcode.js');
 
 const accountName   = process.env.AZ_STORAGE_ACCOUNT_NAME;
 const containerName = process.env.AZ_STORAGE_CONTAINER_NAME;
@@ -82,10 +83,11 @@ function createPhotos(req, res) {
         const extension = getExtensionFromContentType(contentType);
         const nakedFilename = req.query.targetFilename.split(".")[0];
         const bucketFilename = `${nakedFilename}.${extension}`; 
+        const bucketUrl = `${containerUrl}/${bucketFilename}`;
 
         // Set up client for the blob we're about to create
         const blockBlob = new BlockBlobClient(
-            `${containerUrl}/${bucketFilename}`, 
+            bucketUrl, 
             new DefaultAzureCredential()
         );
         
@@ -97,6 +99,10 @@ function createPhotos(req, res) {
             2,               //maxConcurrency
             { blobHTTPHeaders: { blobContentType: contentType } }
         ).then(() => {
+            if(contentType.split('/')[0] === 'video') {
+                transcodeVideo(bucketUrl); //create a transcode job for the video
+            }
+
             res.status(201).send({ 
                 message: 'OK',
                 details: 'Files uploaded successfully!' 
