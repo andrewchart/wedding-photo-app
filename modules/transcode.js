@@ -10,6 +10,12 @@ const transcodeClient = new AzureMediaServices(
     subscriptionId
 );
 
+/**
+ * Transcodes a video file based on a Transform profile from a source url
+ * @param {string} url 
+ * @param {string} transformName 
+ * @returns 
+ */
 async function transcodeVideo(url, transformName = 'default') {
     try {
         const jobName = createJobName(url);
@@ -63,7 +69,7 @@ async function transcodeVideo(url, transformName = 'default') {
                     odataType: '#Microsoft.Media.JobOutputAsset',
                     assetName: jobName
                 }],
-                description: 'job description'
+                description: 'Mobile web encoding job'
             }
         );
     } catch(error) {
