@@ -99,8 +99,20 @@ function createPhotos(req, res) {
             2,               //maxConcurrency
             { blobHTTPHeaders: { blobContentType: contentType } }
         ).then(() => {
+            // Create a transcode job for the video and tag the original
+            // file with the asset name so progress can be checked later
             if(contentType.split('/')[0] === 'video') {
-                transcodeVideo(bucketUrl); //create a transcode job for the video
+                const transcodeTransformName = 'default';
+
+                transcodeVideo(bucketUrl, transcodeTransformName).then((job) => {
+                    const transcodeJobName = job.name;
+                    blockBlob.setMetadata({ 
+                        transcodeJobName,
+                        transcodeTransformName
+                    });
+                }).catch((error) => {
+                    console.log('Transcode job creation failed.');
+                });
             }
 
             res.status(201).send({ 
