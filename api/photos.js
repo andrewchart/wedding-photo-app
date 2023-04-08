@@ -52,7 +52,7 @@ async function getPhotos(req, res) {
         let files = [];
         let promises = [];
 
-        items.forEach(item => {
+        items.forEach((item, index) => {
 
             let promise = new Promise(async (resolve) => {
                 const contentType = item.properties.contentType;
@@ -70,12 +70,12 @@ async function getPhotos(req, res) {
                     transcodedUrl = await getTranscodedUrl(item);
                 }
 
-                files.push({
+                files[index] = {
                     url: `${baseUrl}/${item.name}`,
                     transcodedUrl,
                     thumbnail: getThumbnailUrl(item),
                     contentType
-                });
+                };
 
                 resolve(true);
             });
