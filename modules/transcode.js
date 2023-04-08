@@ -77,6 +77,25 @@ async function transcodeVideo(url, transformName = 'default') {
     }
 }
 
+/**
+ * Confirms whether a transcode job is in its finished state or not
+ * @param {string} transcodeTransformName 
+ * @param {string} transcodeJobName 
+ * @returns {boolean}
+ */
+function transcodeJobCompleted(transcodeTransformName, transcodeJobName) {
+    return transcodeClient.jobs.get(
+        resourceGroup, 
+        accountName, 
+        transcodeTransformName, 
+        transcodeJobName
+    ).then((job) => {
+        return (job.state === 'Finished');
+    }).catch((error) => {
+        return false;
+    });
+}
+
 // HELPERS
 
 /**
@@ -150,4 +169,21 @@ function createJobName(url) {
     return url.substring(url.lastIndexOf('/') + 1).split('.')[0];
 }
 
-module.exports = transcodeVideo;
+/**
+ * Defines the algorithm for relating the storage bucket 
+ * name of a transcoded video asset compared to the 
+ * name of the original video asset. I.e. replace folder 
+ * prefix and file extension.
+ * @param {string} originalName
+ */
+function getTranscodedBlobName(originalName) {
+    return originalName
+        .replace(/^original\//, 'transcoded/')
+        .replace(/[^\.]*$/, 'mp4');
+}
+
+module.exports = {
+    getTranscodedBlobName,
+    transcodeJobCompleted,
+    transcodeVideo
+}

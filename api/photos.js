@@ -2,7 +2,11 @@ require('dotenv').config();
 
 const { BlobServiceClient, BlockBlobClient } = require("@azure/storage-blob");
 const { DefaultAzureCredential } = require("@azure/identity");
-const transcodeVideo = require('../modules/transcode.js');
+const { 
+    getTranscodedBlobName, 
+    transcodeJobCompleted, 
+    transcodeVideo 
+} = require('../modules/transcode.js');
 
 const accountName   = process.env.AZ_STORAGE_ACCOUNT_NAME;
 const containerName = process.env.AZ_STORAGE_CONTAINER_NAME;
@@ -27,7 +31,11 @@ async function getPhotos(req, res) {
     let pageSize = ((pageSizeFromQuery > 0) ? pageSizeFromQuery : 1);
     let pageMarker = req.query.pageMarker || undefined;
 
-    let blobOpts = { prefix: 'original' };
+    let blobOpts = { 
+        prefix: 'original',
+        includeMetadata: true
+    }
+
     let pageOpts = { 
         maxPageSize: pageSize,
         continuationToken: pageMarker  // undefined for first page
@@ -42,30 +50,48 @@ async function getPhotos(req, res) {
         let done = (marker === '');
 
         let files = [];
+        let promises = [];
 
         items.forEach(item => {
 
-            const contentType = item.properties.contentType;
+            let promise = new Promise(async (resolve) => {
+                const contentType = item.properties.contentType;
 
-            // If the content is an image and image CDN url is specified, return
-            // the CDN-ized url in the response. Otherwise just return the blob url
-            const baseUrl = (contentType.split('/')[0] === 'image' && imageCdnUrl) ? 
-                imageCdnUrl : containerUrl;
+                // If the content is an image and image CDN url is specified, return
+                // the CDN-ized url in the response. Otherwise just return the blob url
+                const baseUrl = (contentType.split('/')[0] === 'image' && imageCdnUrl) ? 
+                    imageCdnUrl : containerUrl;
 
-            files.push({
-                url: `${baseUrl}/${item.name}`,
-                thumbnail: getThumbnailUrl(item),
-                contentType
+                // If the content is a video, we'll check if the file has metadata 
+                // with the key `transcodedUrl`. If it does, this indicates a transcoded
+                // version of the video is available, and its url can be returned
+                let transcodedUrl;
+                if(contentType.split('/')[0] === 'video') {
+                    transcodedUrl = await getTranscodedUrl(item);
+                }
+
+                files.push({
+                    url: `${baseUrl}/${item.name}`,
+                    transcodedUrl,
+                    thumbnail: getThumbnailUrl(item),
+                    contentType
+                });
+
+                resolve(true);
             });
+            
+            promises.push(promise);
 
         });
-
+        
+        await Promise.all(promises);
+        
         res.status(200).send({
             files,
             nextPage: marker,
             done
         });
-
+        
     } catch(error) {
         res.status(500).send({
             message: 'Internal Server Error',
@@ -255,6 +281,40 @@ function getThumbnailUrl(item) {
     }
 
     return url;
+}
+
+async function getTranscodedUrl(item) {
+    return new Promise(async (resolve) => {
+        if(!item.metadata) resolve();
+
+        const { transcodeJobName, transcodeTransformName, transcodedUrl } = item.metadata;
+
+        // If the `transcodedUrl` metadata key exists, return it directly
+        if(transcodedUrl) resolve(transcodedUrl);
+
+        // Otherwise, check if the file is tagged with Transcode Job
+        // metadata. If so, this can be used to check the progress of the 
+        // transcode job and update the `transcodedUrl` metadata if the 
+        // job has now completed. 
+        if(transcodeTransformName && transcodeJobName) {
+            const jobComplete = await transcodeJobCompleted(transcodeTransformName, transcodeJobName); 
+
+            if(jobComplete) {
+                console.log('transcode completed, moving asset!');
+                // TODO: async moveTranscodedAsset(item.metadata.transcodeJobName)
+                // TODO: rewrite metadata on original file
+
+                // Optimistically return the transcoded item url even 
+                // though move may not be complete
+                resolve(`${containerUrl}/${getTranscodedBlobName(item.name)}`);
+            }
+        }
+        
+        // If there is no transcoded url, and the job is not complete
+        // we return nothing and the transcoded url will not be included
+        // with the API response
+        resolve();
+    });
 }
   
 module.exports = { 
