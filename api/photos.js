@@ -4,6 +4,7 @@ const { BlobServiceClient, BlockBlobClient } = require("@azure/storage-blob");
 const { DefaultAzureCredential } = require("@azure/identity");
 const { 
     getTranscodedBlobName, 
+    moveTranscodedAsset,
     transcodeJobCompleted, 
     transcodeVideo 
 } = require('../modules/transcode.js');

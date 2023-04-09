@@ -1,7 +1,11 @@
 const { AzureMediaServices } = require("@azure/arm-mediaservices");
+const { BlobServiceClient, BlockBlobClient } = require("@azure/storage-blob");
 const { DefaultAzureCredential } = require("@azure/identity");
 
 const accountName = process.env.AZ_MEDIA_SERVICES_ACCOUNT_NAME;
+const accountUrl    = `https://${accountName}.blob.core.windows.net`;
+const containerName = process.env.AZ_STORAGE_CONTAINER_NAME;
+const containerUrl  = `${accountUrl}/${containerName}`;
 const resourceGroup = process.env.AZ_MEDIA_SERVICES_RESOURCE_GROUP;
 const subscriptionId = process.env.AZ_MEDIA_SERVICES_SUBSCRIPTION_ID;
 
@@ -81,7 +85,7 @@ async function transcodeVideo(url, transformName = 'default') {
  * Confirms whether a transcode job is in its finished state or not
  * @param {string} transcodeTransformName 
  * @param {string} transcodeJobName 
- * @returns {boolean}
+ * @returns {Promise}
  */
 function transcodeJobCompleted(transcodeTransformName, transcodeJobName) {
     return transcodeClient.jobs.get(
@@ -94,6 +98,67 @@ function transcodeJobCompleted(transcodeTransformName, transcodeJobName) {
     }).catch((error) => {
         return false;
     });
+}
+
+/**
+ * Identifies the mp4 file within an asset and moves it to the 
+ * public storage location so it can be served as a compressed, 
+ * transcoded asset via the web. Also updates the related 
+ * original file with the url of the transcoded file as metadata,
+ * and cleans up the used transcode asset by deleting it.
+ * @param   {string}  assetName 
+ * @param   {string}  originalBlobName
+ * @returns {Promise}
+ */
+async function moveTranscodedAsset(assetName, originalBlobName) {
+    try {
+        // Determine the asset container name
+        const { container: assetContainerName } = await transcodeClient.assets.get(
+            resourceGroup, 
+            accountName, 
+            assetName
+        );
+
+        // Set up clients for the blob and the two containers
+        const blob = new BlobServiceClient(
+            accountUrl,
+            new DefaultAzureCredential()
+        );
+
+        const assetContainer = blob.getContainerClient(assetContainerName);
+        const targetContainer = blob.getContainerClient(containerName);
+
+        // Identify the transcoded video file
+        let mp4Filename;
+        for await (const blob of assetContainer.listBlobsFlat()) {
+            if(blob.properties.contentType === 'video/mp4') {
+                mp4Filename = blob.name;
+                break;
+            }
+        }
+
+        // Move the blob to have the same filename in the target container, 
+        // but different prefix and extension. We also need the original blob.
+        const transcodedBlobName = getTranscodedBlobName(originalBlobName);
+        const sourceBlob = assetContainer.getBlobClient(mp4Filename);
+        const targetBlob = targetContainer.getBlobClient(transcodedBlobName);
+        const originalBlob = targetContainer.getBlobClient(originalBlobName);
+
+        const { copyStatus } = await targetBlob.syncCopyFromURL(sourceBlob.url);
+
+        if(copyStatus !== 'success') throw new Error('Copy of transcoded asset failed!');
+
+        // Copy successful, so tag the original file metadata
+        originalBlob.setMetadata({ 
+            transcodedUrl: `${containerUrl}/${transcodedBlobName}`
+        });
+
+        // Delete the asset
+        transcodeClient.assets.delete(resourceGroup, accountName, assetName);
+
+    } catch(error) {
+        console.log(error);
+    }
 }
 
 // HELPERS
@@ -184,6 +249,7 @@ function getTranscodedBlobName(originalName) {
 
 module.exports = {
     getTranscodedBlobName,
+    moveTranscodedAsset,
     transcodeJobCompleted,
     transcodeVideo
 }
