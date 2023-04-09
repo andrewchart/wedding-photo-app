@@ -85,7 +85,7 @@ async function getPhotos(req, res) {
         });
         
         await Promise.all(promises);
-        
+
         res.status(200).send({
             files,
             nextPage: marker,
@@ -131,9 +131,8 @@ function createPhotos(req, res) {
                 const transcodeTransformName = 'default';
 
                 transcodeVideo(bucketUrl, transcodeTransformName).then((job) => {
-                    const transcodeJobName = job.name;
                     blockBlob.setMetadata({ 
-                        transcodeJobName,
+                        transcodeJobName: job.name,
                         transcodeTransformName
                     });
                 }).catch((error) => {
@@ -300,9 +299,10 @@ async function getTranscodedUrl(item) {
             const jobComplete = await transcodeJobCompleted(transcodeTransformName, transcodeJobName); 
 
             if(jobComplete) {
-                console.log('transcode completed, moving asset!');
-                // TODO: async moveTranscodedAsset(item.metadata.transcodeJobName)
-                // TODO: rewrite metadata on original file
+                moveTranscodedAsset(
+                    transcodeJobName,  // Earlier we made assetName == jobName
+                    item.name
+                );
 
                 // Optimistically return the transcoded item url even 
                 // though move may not be complete
