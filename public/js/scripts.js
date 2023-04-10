@@ -289,6 +289,8 @@ function uploadFiles(event) {
             hideUploadFeedback();
             toastMessage( getUploadCompleteMessage(outcomes) );
         }, 1500);
+
+        imageFilesElement.value = '';
     });
 }
 
