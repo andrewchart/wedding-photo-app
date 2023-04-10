@@ -90,13 +90,26 @@ function renderPhotoThumbnails(
 
                     case 'video': 
                         videoTemplate = document.createElement('template');
-                        media = document.createElement('video');
-                        media.src = getLightboxUrl(file);
-                        media.controls = true;
-                        media.poster = getThumbnailUrl(file);
-                        media.preload = 'none';
+                    
+                        if("transcodedUrl" in file) {
+                            media = document.createElement('video');
+                            media.src = getLightboxUrl(file);
+                            media.controls = true;
+                            media.poster = getThumbnailUrl(file);
+                            media.preload = 'none';
+                        } 
+                        
+                        else {
+                            media = document.createElement('div');
+                            media.classList.add('videoProcessingMessage');
+                            media.innerHTML = 
+                                `<p>Video processing...</p>
+                                 <p>Please refresh the page in a few minutes 
+                                    to view this video.</p>`;
+                        }
+
+                        linkElement.href = `#video${i}`;
                         media.id = `video${i}`;
-                        linkElement.href = `#video${i}`; 
                         videoTemplate.appendChild(media);
                         break;
 
@@ -360,10 +373,14 @@ function toastMessage(message) {
 }
 
 function getLightboxUrl(file) {
-    let { url, contentType } = file;
+    let { url, transcodedUrl, contentType } = file;
+
+    if(transcodedUrl) return transcodedUrl;
+
     if(contentType.split('/')[0] === 'image') {
         url += '?q=65&h=1080';
     }
+
     return url
 }
 

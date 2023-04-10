@@ -121,6 +121,14 @@ input[type=file] {
     background-size: contain;
 }
 
+.videoProcessingMessage {
+    color: #fff;
+    padding: 0 80px;
+    text-align: center;
+    font-size: 1.4em;
+    line-height: 142%;
+}
+
 #spinner {
     display: inline-block;
     position: relative;
