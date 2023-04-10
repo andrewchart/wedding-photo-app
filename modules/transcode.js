@@ -1,5 +1,5 @@
 const { AzureMediaServices } = require("@azure/arm-mediaservices");
-const { BlobServiceClient, BlockBlobClient } = require("@azure/storage-blob");
+const { BlobServiceClient } = require("@azure/storage-blob");
 const { DefaultAzureCredential } = require("@azure/identity");
 
 const accountName = process.env.AZ_MEDIA_SERVICES_ACCOUNT_NAME;
@@ -175,6 +175,34 @@ function createDefaultTransform() {
          videos to a compressed MP4 format 
          for direct streaming.`;
 
+    const preset = {
+        odataType: '#Microsoft.Media.StandardEncoderPreset',
+        codecs: [
+            {
+                odataType: '#Microsoft.Media.H264Video',
+                keyFrameInterval: "PT2S",
+                complexity: "Speed",
+                layers: [{
+                    odataType: '#Microsoft.Media.H264Layer',
+                    width: "1280",
+                    height: "720",
+                    bitrate: 2000000,
+                    label: "2000kbps"
+                }]
+            },
+            {
+                odataType: '#Microsoft.Media.AacAudio',
+                channels: 2,
+                samplingRate: 44100,
+                bitrate: 128000
+            }
+        ],
+        formats: [{
+            odataType: '#Microsoft.Media.Mp4Format',
+            filenamePattern: "{Basename}-{Label}{Extension}"
+        }]
+    }
+
     return transcodeClient.transforms.createOrUpdate(
         resourceGroup, 
         accountName, 
@@ -182,14 +210,8 @@ function createDefaultTransform() {
         {
             description: defaultTransformDesc,
             outputs: [{
+                preset,
                 onError: 'StopProcessingJob',
-                preset: {
-                    odataType: '#Microsoft.Media.BuiltInStandardEncoderPreset',
-                    configurations: { 
-                        complexity: 'Speed'
-                    },
-                    presetName: 'H264SingleBitrate720p'
-                },
                 relativePriority: 'Normal'
             }]
         }
