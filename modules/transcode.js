@@ -219,6 +219,7 @@ function createDefaultTransform() {
     ).then((result) => {
         return true; // created
     }).catch((error) => {
+        console.log(error);
         return false; // failed
     });
 }
@@ -237,9 +238,11 @@ function transformExists(transformName) {
         if(result.type === 'Microsoft.Media/mediaservices/transforms') {
             return true;
         } else {
+            console.log('Unexpected type encountered when checking Transform:', result.type);
             return undefined; // unexpected result
         }
     }).catch((error) => {
+        console.log(error);
         if(error.statusCode === 404) {
             return false; // we know it doesn't exist
         } else {
