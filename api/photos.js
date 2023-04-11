@@ -132,12 +132,13 @@ function createPhotos(req, res) {
                 const transcodeTransformName = 'default';
 
                 transcodeVideo(bucketUrl, transcodeTransformName).then((job) => {
+                    if(!job) throw new Error('Failed to create transcode job');
                     blockBlob.setMetadata({ 
                         transcodeJobName: job.name,
                         transcodeTransformName
                     });
                 }).catch((error) => {
-                    console.log('Transcode job creation failed.');
+                    console.log(error);
                 });
             }
 

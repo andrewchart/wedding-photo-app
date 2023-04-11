@@ -77,6 +77,7 @@ async function transcodeVideo(url, transformName = 'default') {
             }
         );
     } catch(error) {
+        console.log(error);
         return false;
     }
 }
