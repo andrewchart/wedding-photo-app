@@ -97,6 +97,8 @@ function renderPhotoThumbnails(
                             media.controls = true;
                             media.poster = getThumbnailUrl(file);
                             media.preload = 'none';
+                            media.height = window.innerHeight - 100;
+                            media.width = window.innerWidth - 100;
                         } 
                         
                         else {
