@@ -1,4 +1,5 @@
 # wedding-photo-app
+
 I built this app to allow guests at my wedding to simply and easily share 
 photos and videos they captured during the day with us and other guests. 
 
@@ -7,19 +8,21 @@ Anyone who knew the address of the site could upload media and view the
 media that others had uploaded. 
 
 My primary aim was to make it as simple as possible for guests to upload photos
-to a "private" website / storage location so we could have everybody's best
-photos in one, collated location to enjoy after the event.
+via a website to a single storage location so we could have everybody's best
+photos in one, collated place to enjoy after the event.
 
 ## Features
-* A simple one-page website for event guests to upload photos & videos
-  * Guests can view photos & videos uploaded by others in an event gallery
-  * Guests can view large versions of the media in a lightbox
-  * Managers can delete media on-the-fly to remove duplicates or inappropriate content
 
-* Designed primarily for use on mobile phones
-  * Support for image CDN to deliver resolution/quality-optimised images
-  * Transcoded video assets for streaming on mobile connections
-  * Original uploads are all stored in a storage bucket with no loss of quality
+**A simple one-page website for event guests to upload photos & videos**
+* Guests can view photos & videos uploaded by others in an event gallery
+* Gallery paginated with infinite scroll
+* Guests can view large versions of the media in a lightbox
+* Managers can delete media on-the-fly to remove duplicates or inappropriate content
+
+**Designed primarily for use on mobile phones**
+* Support for image CDN to deliver resolution/quality-optimised images
+* Transcoded video assets for streaming on mobile connections
+* Original uploads are all stored in a storage bucket with no loss of quality
 
 For more details, see the [Technical Features](#technical-features) section.
 
@@ -28,7 +31,7 @@ For more details, see the [Technical Features](#technical-features) section.
 
 ---
 
-## Quickstart
+## Application Overview
 
 This application consists of a NodeJS web app with a "front end" (an Express 
 server which serves static HTML pages) and a back-end (an API which handles 
@@ -48,12 +51,14 @@ The code, as published, also expects
 to be configured to create compressed versions of uploaded videos to improve user 
 experience when streaming video media on mobile network connections.
 
-Note: Other cloud providers' services may be used but would require major changes
-to the code.
+_Note: Other cloud providers' services may be used but would require major changes to the code._
 
-### Environment Variables
 
-### Azure Services
+## Application Setup
+
+Follow these instructions to get the application up and running.
+
+### Step 1: Setup Azure Services
 
 #### Azure Blob Storage
 
@@ -66,7 +71,21 @@ major surgery. Please read the detailed notes below to familiarise with the repo
 #### Role Assignments
 
 
-### To run locally
+<a name="environment-variables"></a>
+### Step 2: Define Environment Variables
+
+| process.ENV Variable              | Description                                                                                                                    |
+|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| AZ_MEDIA_SERVICES_ACCOUNT_NAME    | Azure: The name of the **Azure Media Services subscription** to use.                                                           |
+| AZ_MEDIA_SERVICES_RESOURCE_GROUP  | Azure: The name of the **Resource Group** to which the Azure Media Services subscription belongs.                              |
+| AZ_MEDIA_SERVICES_SUBSCRIPTION_ID | Azure: The **Subscription ID** of the Azure Media Services subscription.                                                       |
+| AZ_STORAGE_ACCOUNT_NAME           | Azure: The name of the **Storage Account** to use for storing and serving image & video assets.                                |
+| AZ_STORAGE_CONTAINER_NAME         | Azure: The name of the **Blob Container** within the storage account where files will be stored.                               |
+| IMAGE_CDN_BASE_URL                | The base url of the **Image CDN**. This will replace the storage bucket base URL for images only (see [Image CDN](#image-cdn)) |
+| MANAGE_PASSWORD                   | A **password** that is required to be able to delete assets from the /manage screen.                                           |
+
+
+### Step 3: To run locally
 
 Install dependencies and start the Express server.
 
@@ -75,25 +94,40 @@ Install dependencies and start the Express server.
 ```npm start```
 
 
+### Step 4: To run on Azure (Web Apps)
 
-### To run on Azure (Web Apps)
-
-#### Setup
-
-#### Authorization (Role Assignments)
 
 ---
 
 
-## Detailed Notes
-
+## Application Details
 
 <a name="technical-features"></a>
 ### Technical Features
 
+<a name="image-cdn"></a>
 #### Image CDN
 
+#### fsLightbox
+
 #### Video Transcoding
+
+### Folder Structure
+_The following describes the folder structure of this application:_
+
+    .
+    ├── .github/workflows     # Github Actions workflow definition (auto generated by Azure)
+    ├── api                   # Code that handles GET/POST/DELETE API requests
+    ├── modules               # Additional server code to support the API (video transcoding code)
+    ├── public                # Files available on the public website (HTML, Images, CSS & JS)
+    ├── src                   # Source files for image assets. In this case Photoshop files.
+    ├── .env.example          # Example of a valid .env file
+    ├── .gitignore
+    ├── index.js              # App entry point, Express server code and routing
+    ├── package-lock.json
+    ├── package.json
+    ├── LICENSE
+    └── README.md
 
 ### Limitations & Things To Know
 
@@ -110,7 +144,7 @@ Usage is without warranty or support and I do not guarantee the application will
 free of defects or for your specific purposes.
 
 If you have questions, issues or pull requests, you are welcome to contact me through
-Github or [my personal website](https://andrewchart.co.uk/contact). I don't guarantee 
+Github or [my personal website](https://andrewchart.co.uk/contact-me). I don't guarantee 
 a response or further maintainance of this repository. 
 
 If you have read this far - thank you for your interest!

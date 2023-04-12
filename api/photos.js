@@ -15,7 +15,6 @@ const accountUrl    = `https://${accountName}.blob.core.windows.net`;
 const containerUrl  = `${accountUrl}/${containerName}`;
 const imageCdnUrl   = process.env.IMAGE_CDN_BASE_URL;
 
-
 // GET
 async function getPhotos(req, res) {
 
@@ -235,6 +234,13 @@ function deletePhotos(req, res) {
 
 
 // HELPERS
+
+/**
+ * Takes the content-type metadata of a file and returns a
+ * reasonable extension for the file.
+ * @param   {string} contentType 
+ * @returns {string}
+ */
 function getExtensionFromContentType(contentType) {
 
     const suffix = contentType.split("/")[1];
@@ -256,6 +262,12 @@ function getExtensionFromContentType(contentType) {
 
 }
 
+/**
+ * Works out the url of the thumbnail image displayed in
+ * the photo gallery.
+ * @param   {object} item 
+ * @returns {string}
+ */
 function getThumbnailUrl(item) {
     const baseUrl = (imageCdnUrl || containerUrl);
     const videoThumbs = { base: 'video_thumbnails', extension: 'jpg' };
@@ -284,6 +296,20 @@ function getThumbnailUrl(item) {
     return url;
 }
 
+/**
+ * When a video file has just been uploaded a transcode job
+ * is generated to convert it to a limited bitrate format. 
+ * This function runs when the object is constructed for the
+ * GET API and either returns the transcoded url if was 
+ * previously confirmed (i.e. url exists within the original
+ * file's metadata), or if the metadata isn't present, the 
+ * function will check the transcode job to see if it's 
+ * finished, and if it is return the transcoded url. Other
+ * scenarios return undefined and result in the front end
+ * displaying a "this video is still processing" message.
+ * @param   {object} item 
+ * @returns {string|undefined}
+ */
 async function getTranscodedUrl(item) {
     return new Promise(async (resolve) => {
         if(!item.metadata) resolve();
