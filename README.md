@@ -19,20 +19,20 @@ metadata.
 ## Features
 
 **A simple one-page website for event guests to upload photos & videos**
-* Guests can view photos & videos uploaded by others in an event gallery
-* Gallery paginated with infinite scroll
-* Guests can view large versions of the media in a lightbox
-* Managers can delete media on-the-fly to remove duplicates or inappropriate content
+*  Guests can view photos & videos uploaded by others in an event gallery
+*  Gallery paginated with infinite scroll
+*  Guests can view large versions of the media in a lightbox
+*  Managers can delete media on-the-fly to remove duplicates or inappropriate content
 
 **Designed primarily for use on mobile phones**
-* Support for image CDN to deliver resolution/quality-optimised images
-* Transcoded video assets for streaming on mobile connections
-* Original uploads are all stored in a storage bucket with no loss of quality
+*  Support for image CDN to deliver resolution/quality-optimised images
+*  Transcoded video assets for streaming on mobile connections
+*  Original uploads are all stored in a storage bucket with no loss of quality
 
 **Download a subset of photos and videos after the event**
-* The owner of the photos can create fields by which to filter the photos and videos
-* Includes the ability to filter by person using facial recognition
-* Users create a filtered selection and click a button to download all photos as a single zip file
+*  The owner of the photos can create fields by which to filter the photos and videos
+*  Includes the ability to filter by person using facial recognition
+*  Users create a filtered selection and click a button to download all photos as a single zip file
 
 For more details, see the [Technical Features](#technical-features) section.
 
@@ -61,12 +61,12 @@ The code, as published, also expects
 to be configured to create compressed versions of uploaded videos to improve user 
 experience when streaming video media on mobile network connections.
 
-_Note: Other cloud providers' services may be used but would require major changes to the code._
+_Note: Other cloud providers' services may be used but would require major changes to the code_
 
 
 ## Application Setup
 
-Follow these instructions to get the application up and running.
+_Follow these instructions to get the application up and running_
 
 ### Step 1: Setup Azure Services
 
@@ -114,16 +114,12 @@ Install dependencies and start the Express server.
 
 ### Use Case Details
 
-This section describes the use cases I envisaged and the reason to build this app as opposed to 
-using another solution like a public social media platform.
+_This section describes the use cases I envisaged and the reason to build this app as opposed to_ 
+_using another solution like a public social media platform._
 
-<details>
-<summary>#### Uploading Photos and Videos for an event</summary>
+#### Uploading Photos and Videos for an event
 
-</details>
-
-<details>
-<summary>#### Downloading Photos and Videos from a past event</summary>
+#### Downloading Photos and Videos from a past event
 
 Consider an event with 100 attendees where 2000 photos are taken. Any given attendee may want to
 download "all the photos containing myself" and "all the photos containing these friends". 
@@ -136,7 +132,6 @@ want.
 This app was designed to make application of metadata on a large collection easy for the owner of 
 the photos, and therefore also make it easy for the users to download the subset they want, ignoring
 the photos they do not want.
-</details>
 
 <a name="technical-features"></a>
 ### Technical Features
@@ -144,20 +139,11 @@ the photos they do not want.
 This section describes how the application works in
 
 <a name="image-cdn"></a>
-<details>
-<summary>#### Image CDN</summary>
+#### Image CDN
 
-</details>
+#### fsLightbox
 
-<details>
-<summary>#### fsLightbox</summary>
-
-</details>
-
-<details>
-<summary>#### Video Transcoding</summary>
-
-</details>
+#### Video Transcoding
 
 ### Folder Structure
 _The following describes the folder structure of this application:_
