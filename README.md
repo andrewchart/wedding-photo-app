@@ -19,22 +19,25 @@ metadata.
 ## Features
 
 **A simple one-page website for event guests to upload photos & videos**
+
 *  Guests can view photos & videos uploaded by others in an event gallery
 *  Gallery paginated with infinite scroll
 *  Guests can view large versions of the media in a lightbox
 *  Managers can delete media on-the-fly to remove duplicates or inappropriate content
 
 **Designed primarily for use on mobile phones**
+
 *  Support for image CDN to deliver resolution/quality-optimised images
 *  Transcoded video assets for streaming on mobile connections
 *  Original uploads are all stored in a storage bucket with no loss of quality
 
 **Download a subset of photos and videos after the event**
+
 *  The owner of the photos can create fields by which to filter the photos and videos
 *  Includes the ability to filter by person using facial recognition
 *  Users create a filtered selection and click a button to download all photos as a single zip file
 
-For more details, see the [Technical Features](#technical-features) section.
+_For more details, see the [Technical Features](#technical-features) section_
 
 ## Screenshots
 
