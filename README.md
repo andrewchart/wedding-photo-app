@@ -5,11 +5,16 @@ photos and videos they captured during the day with us and other guests.
 
 The app was hosted as a public website and made available during the event. 
 Anyone who knew the address of the site could upload media and view the 
-media that others had uploaded. 
+media that others had uploaded in real time. 
 
 My primary aim was to make it as simple as possible for guests to upload photos
 via a website to a single storage location so we could have everybody's best
 photos in one, collated place to enjoy after the event.
+
+Following the event, I added the ability for a user to download the subset of 
+photos and videos of interest to them (e.g. just the photos containing themselves
+and their friends) by creating filters based upon facial recognition and text 
+metadata.
 
 ## Features
 
@@ -23,6 +28,11 @@ photos in one, collated place to enjoy after the event.
 * Support for image CDN to deliver resolution/quality-optimised images
 * Transcoded video assets for streaming on mobile connections
 * Original uploads are all stored in a storage bucket with no loss of quality
+
+**Download a subset of photos and videos after the event**
+* The owner of the photos can create fields by which to filter the photos and videos
+* Includes the ability to filter by person using facial recognition
+* Users create a filtered selection and click a button to download all photos as a single zip file
 
 For more details, see the [Technical Features](#technical-features) section.
 
@@ -102,15 +112,52 @@ Install dependencies and start the Express server.
 
 ## Application Details
 
+### Use Case Details
+
+This section describes the use cases I envisaged and the reason to build this app as opposed to 
+using another solution like a public social media platform.
+
+<details>
+<summary>#### Uploading Photos and Videos for an event</summary>
+
+</details>
+
+<details>
+<summary>#### Downloading Photos and Videos from a past event</summary>
+
+Consider an event with 100 attendees where 2000 photos are taken. Any given attendee may want to
+download "all the photos containing myself" and "all the photos containing these friends". 
+
+In some downloader interfaces for large sets of files, this subset could be difficult to isolate. 
+Perhaps the user has to find just 3 files in the collection of 2000 by eye, or perhaps they want 75%
+of the files and have to make large selections or unselect several hundred photos which they don't
+want.
+
+This app was designed to make application of metadata on a large collection easy for the owner of 
+the photos, and therefore also make it easy for the users to download the subset they want, ignoring
+the photos they do not want.
+</details>
+
 <a name="technical-features"></a>
 ### Technical Features
 
+This section describes how the application works in
+
 <a name="image-cdn"></a>
-#### Image CDN
+<details>
+<summary>#### Image CDN</summary>
 
-#### fsLightbox
+</details>
 
-#### Video Transcoding
+<details>
+<summary>#### fsLightbox</summary>
+
+</details>
+
+<details>
+<summary>#### Video Transcoding</summary>
+
+</details>
 
 ### Folder Structure
 _The following describes the folder structure of this application:_
@@ -134,6 +181,8 @@ _The following describes the folder structure of this application:_
 #### Tested platforms
 
 #### Security
+
+#### Privacy
 
 ---
 
