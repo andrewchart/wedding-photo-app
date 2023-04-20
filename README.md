@@ -87,7 +87,7 @@ major surgery. Please read the detailed notes below to familiarise with the repo
 <a name="environment-variables"></a>
 ### Step 2: Define Environment Variables
 
-| process.ENV Variable              | Description                                                                                                                    |
+| process.env Variable              | Description                                                                                                                    |
 |-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
 | AZ_MEDIA_SERVICES_ACCOUNT_NAME    | Azure: The name of the **Azure Media Services subscription** to use.                                                           |
 | AZ_MEDIA_SERVICES_RESOURCE_GROUP  | Azure: The name of the **Resource Group** to which the Azure Media Services subscription belongs.                              |
@@ -118,7 +118,7 @@ Install dependencies and start the Express server.
 ### Use Case Details
 
 _This section describes the use cases I envisaged and the reason to build this app as opposed to_ 
-_using another solution like a public social media platform._
+_using another solution like a public social media platform_
 
 #### Uploading Photos and Videos for an event
 
@@ -139,7 +139,7 @@ the photos they do not want.
 <a name="technical-features"></a>
 ### Technical Features
 
-This section describes how the application works in
+_This section describes how components of the application work together technically_
 
 <a name="image-cdn"></a>
 #### Image CDN

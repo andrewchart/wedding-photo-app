@@ -10,6 +10,8 @@ const port = process.env.PORT || 3000;
 
 /* Load API Methods */
 const photosAPI = require('./api/photos.js');
+const tagPhotosAPI = require('./api/tagPhotos.js');
+const downloadPhotosAPI = require('./api/downloadPhotos.js');
 
 /* Serve static files from the public folder */
 app.use(express.static('public'));
@@ -21,6 +23,15 @@ app.get('/manage/', (req, res) => {
 app.post('/manage/', (req, res) => {
     res.sendFile(__dirname + '/public/manage.html');
 });
+
+app.get('/tag/', (req, res) => {
+    res.sendFile(__dirname + '/public/tag.html');
+});
+
+app.get('/download/', (req, res) => {
+    res.sendFile(__dirname + '/public/download.html');
+});
+
 
 /* API health check */
 app.get('/api', (req, res) => {
@@ -47,6 +58,14 @@ app.post('/api/photos', (req, res) => {
 
 app.delete('/api/photos', (req, res) => {
     photosAPI.deletePhotos(req, res);
+});
+
+app.post('/api/photos/tag', (req, res) => {
+    tagPhotosAPI.tagPhotos(req, res);
+});
+
+app.post('/api/photos/download', (req, res) => {
+    downloadPhotosAPI.downloadPhotos(req, res);
 });
 
 
