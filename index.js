@@ -59,12 +59,20 @@ app.get('/manage/', (req, res) => {
     res.sendFile(__dirname + '/src/pages/manage.html');
 });
 
-app.post('/manage/', (req, res) => {
-    res.sendFile(__dirname + '/src/pages/manage.html');
+app.get('/people/', (req, res) => {
+    res.sendFile(__dirname + '/src/pages/people.html');
 });
 
 app.get('/tag/', (req, res) => {
     res.sendFile(__dirname + '/src/pages/tag.html');
+});
+
+app.get('/delete/', (req, res) => {
+    res.sendFile(__dirname + '/src/pages/delete.html');
+});
+
+app.post('/delete/', (req, res) => {
+    res.sendFile(__dirname + '/src/pages/delete.html');
 });
 
 
