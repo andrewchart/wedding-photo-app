@@ -16,6 +16,12 @@ h1 {
     text-align: center;
 }
 
+nav ul li {
+    list-style: none;
+    margin-bottom: 0.7em;
+    font-size: 1.4em;
+}
+
 #managePassword { 
     margin-top: calc(0.6em + 4px);
     padding: 0.5em 0.3em;

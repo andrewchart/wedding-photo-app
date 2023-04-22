@@ -169,7 +169,7 @@ function deletePhotos(req, res) {
         failed: [...req.body.files] // assume files haven't been deleted
     }
 
-    if(req.body.password !== process.env.MANAGE_PASSWORD) {
+    if(req.body.password !== process.env.WPA_MANAGE_PASSWORD) {
         res.status(401).send({ 
             message: 'Unauthorized', 
             details: 'Password does not match.', 

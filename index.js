@@ -14,22 +14,57 @@ const tagPhotosAPI = require('./api/tagPhotos.js');
 const downloadPhotosAPI = require('./api/downloadPhotos.js');
 
 /* Serve static files from the public folder */
-app.use(express.static('public'));
+app.use(express.static('public', { index: false }));
 
-app.get('/manage/', (req, res) => {
-    res.sendFile(__dirname + '/public/manage.html');
+// Route homepage to upload or download as per env setting
+app.get('/', (req, res) => {
+    switch(process.env.WPA_INDEX_REDIRECT) {
+        case 'upload':
+            res.redirect('/upload');
+            break;
+
+        case 'download':
+            res.redirect('/download');
+            break;
+
+        default:
+            res.sendFile(__dirname + '/public/index.html');
+            break;
+    }
 });
 
-app.post('/manage/', (req, res) => {
-    res.sendFile(__dirname + '/public/manage.html');
-});
-
-app.get('/tag/', (req, res) => {
-    res.sendFile(__dirname + '/public/tag.html');
+app.get('/upload/', (req, res) => {
+    if(parseInt(process.env.WPA_ENABLE_UPLOAD) !== 1) {
+        return res.status(404).json({ 
+            status: 404, 
+            message: 'Not Found', 
+            details: 'Page not found.' 
+        });
+    } 
+    res.sendFile(__dirname + '/src/pages/upload.html');
 });
 
 app.get('/download/', (req, res) => {
-    res.sendFile(__dirname + '/public/download.html');
+    if(parseInt(process.env.WPA_ENABLE_DOWNLOAD) !== 1) {
+        return res.status(404).json({ 
+            status: 404, 
+            message: 'Not Found', 
+            details: 'Page not found.' 
+        });
+    } 
+    res.sendFile(__dirname + '/src/pages/download.html');
+});
+
+app.get('/manage/', (req, res) => {
+    res.sendFile(__dirname + '/src/pages/manage.html');
+});
+
+app.post('/manage/', (req, res) => {
+    res.sendFile(__dirname + '/src/pages/manage.html');
+});
+
+app.get('/tag/', (req, res) => {
+    res.sendFile(__dirname + '/src/pages/tag.html');
 });
 
 
