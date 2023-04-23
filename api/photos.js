@@ -70,11 +70,16 @@ async function getPhotos(req, res) {
                     transcodedUrl = await getTranscodedUrl(item);
                 }
 
+                // Meta tags and people tags for this photo
+                const { metaTags, peopleTags } = item.metadata;
+
                 files[index] = {
                     url: `${baseUrl}/${item.name}`,
                     transcodedUrl,
                     thumbnail: getThumbnailUrl(item),
-                    contentType
+                    contentType,
+                    metaTags,
+                    peopleTags
                 };
 
                 resolve(true);
