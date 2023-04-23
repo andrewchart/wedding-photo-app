@@ -90,7 +90,7 @@ input[type=file] {
     margin-bottom: 0.8em;
 }
 
-#gallery li {
+#gallery > li {
     height: 30vw;
     flex-grow: 1;
     position: relative;
@@ -314,13 +314,13 @@ input[type=file] {
 }
 
 @media screen and (min-width: 550px) {
-    #gallery li {
+    #gallery > li {
         height: 25vw;
     }
 }
 
 @media screen and (min-width: 900px) {
-    #gallery li {
+    #gallery > li {
         height: 200px;
     }
 }

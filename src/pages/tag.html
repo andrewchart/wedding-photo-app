@@ -16,13 +16,48 @@
             <h1>Tag Photos</h1>
         </header>
         <section>
+            <ul 
+                id="gallery" 
+                class="manageGallery tagGallery" 
+                data-next-page="" 
+                data-done="false" 
+                data-page-size="20">
+            </ul>
+
+            <div id="spinner" class="hidden"><div></div></div>
             
+            <p id="refreshLink" class="hidden">
+                <span class="message">No more photos to show.</span><br />
+                <a class="action" href="#">Refresh to see newer photos</a>
+            </p>
         </section>
         
         <div id="toast">
             <div class="timer"></div>
             <div class="message"></div>
         </div>
+
+        <template id="galleryItem">
+            <li>
+                <a></a>
+                <p class="bucketPath"></p>
+                <div class="tagGroup peopleTagGroup">
+                    People: 
+                    <ul class="peopleTags">
+                        <li>Joseph Christopher<a class="deleteTag"></a></li>
+                        <li>Jenny Smith<a class="deleteTag"></a></li>
+                    </ul>
+                </div>
+                <div class="tagGroup metaTagGroup">
+                    Tags: 
+                    <ul class="metaTags">
+                        <li>Annika's family<a class="deleteTag"></a></li>
+                        <li>Annika's friends<a class="deleteTag"></a></li>
+                        <li>Andy's friends<a class="deleteTag"></a></li>
+                    </ul>
+                </div>
+            </li>
+        </template>
 
         <script src="js/scripts.js"></script>
     </body>

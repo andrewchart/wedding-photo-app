@@ -59,22 +59,27 @@ input[name=username] {
     gap: 0;
 }
 
-#gallery.manageGallery li {
+#gallery.manageGallery > li {
     height: 45vw;
     width: 44%;
+    overflow: scroll;
     padding: 2%;
     margin: 1%;
     box-sizing: border-box;
     border: 1px solid #ddd;
 }
 
-#gallery.manageGallery li img {
+#gallery.manageGallery.tagGallery > li {
+    height: 75vw;
+}
+
+#gallery.manageGallery > li img {
     height: 66%;
     max-height: 66%;
     max-width: 100%;
 }
 
-#gallery.manageGallery li .bucketPath {
+#gallery.manageGallery > li .bucketPath {
     max-height: 29%;
     padding: 0 0.3em;
     font-size: 0.6em;
@@ -84,30 +89,78 @@ input[name=username] {
     margin: 5% 0;
 }
 
-#gallery.manageGallery li.selected {
+#gallery.manageGallery > li.selected {
     background-color: #eb1d1d;
     color: #ffdbdb;
 }
 
-#gallery.manageGallery li.selected img {
+#gallery.manageGallery > li.selected img {
     filter: grayscale(80%) opacity(50%);
 }
 
+.tagGroup {
+    text-align: left;
+    font-size: 0.7em;
+}
+
+.tagGroup ul {
+    display: inline;
+}
+
+.tagGroup li {
+    display: inline-block;
+    padding: 0.3em 0 0.3em 0.5em;
+    margin: 0 0.4em 0.4em 0;
+    list-style: none;
+    font-size: 0.9em;
+    border: 1px solid #e4afef;
+    background-color: #983a89;
+    color: #fff;
+    cursor: default;
+}
+
+.tagGroup.metaTagGroup li {
+    border-color: #5f9bcf;
+    background-color: #0d5eb2;
+}
+
+.deleteTag {
+    color: #fff;
+    cursor: pointer;
+}
+
+.deleteTag::after {
+    content: "×";
+    padding: 0.3em 0.5em;
+}
+
+.deleteTag:hover {
+    color: #eb1d1d;
+}
+
 @media screen and (min-width: 550px) {
-    #gallery.manageGallery li {
-        height: 27vw;
+    #gallery.manageGallery > li {
+        height: 36vw;
         width: 27%;
         padding: 2%;
         margin: 1%;
     }
 
-    #gallery.manageGallery li .bucketPath {
+    #gallery.manageGallery.tagGallery > li {
+        height: 58vw;
+    }
+
+    #gallery.manageGallery > li .bucketPath {
         font-size: 0.8em;
     }
 }
 
 @media screen and (min-width: 900px) {
-    #gallery.manageGallery li {
+    #gallery.manageGallery > li {
         height: 300px;
+    }
+
+    #gallery.manageGallery.tagGallery > li {
+        height: 430px;
     }
 }
