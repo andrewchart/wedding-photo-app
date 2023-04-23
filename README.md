@@ -33,7 +33,7 @@ metadata.
 
 **Download a subset of photos and videos after the event**
 
-*  The owner of the photos can create fields by which to filter the photos and videos
+*  The owner of the photos can create tags by which to filter the photos and videos
 *  Includes the ability to filter by person using facial recognition
 *  Users create a filtered selection and click a button to download all photos as a single zip file
 
@@ -87,18 +87,18 @@ major surgery. Please read the detailed notes below to familiarise with the repo
 <a name="environment-variables"></a>
 ### Step 2: Define Environment Variables
 
-| process.env Variable              | Description                                                                                                                                      |
-|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| AZ_MEDIA_SERVICES_ACCOUNT_NAME    | Azure: The name of the **Azure Media Services subscription** to use.                                                                             |
-| AZ_MEDIA_SERVICES_RESOURCE_GROUP  | Azure: The name of the **Resource Group** to which the Azure Media Services subscription belongs.                                                |
-| AZ_MEDIA_SERVICES_SUBSCRIPTION_ID | Azure: The **Subscription ID** of the Azure Media Services subscription.                                                                         |
-| AZ_STORAGE_ACCOUNT_NAME           | Azure: The name of the **Storage Account** to use for storing and serving image & video assets.                                                  |
-| AZ_STORAGE_CONTAINER_NAME         | Azure: The name of the **Blob Container** within the storage account where files will be stored.                                                 |
-| IMAGE_CDN_BASE_URL                | The base url of the **Image CDN**. This will replace the storage bucket base URL for images only (see [Image CDN](#image-cdn))                   |
-| WPA_ENABLE_DOWNLOAD               | Set to `1` to **enable the /download route**. Any other value will cause this route to 404. You may wish to disable this until after your event. |
-| WPA_ENABLE_UPLOAD                 | Set to `1` to **enable the /upload route**. Any other value will cause this route to 404. You may wish to disable this once your event is over.  |
-| WPA_INDEX_REDIRECT                | Set this to `upload` or `download` depending on **the page you want the homepage to redirect to**. Omit this value to render index.html.         |
-| WPA_MANAGE_PASSWORD               | A **password** that is required to be able to delete assets from the /manage screen.                                                             |
+| process.env Variable              | Description                                                                                                                                                    |
+|-----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| AZ_MEDIA_SERVICES_ACCOUNT_NAME    | Azure: The name of the **Azure Media Services subscription** to use.                                                                                           |
+| AZ_MEDIA_SERVICES_RESOURCE_GROUP  | Azure: The name of the **Resource Group** to which the Azure Media Services subscription belongs.                                                              |
+| AZ_MEDIA_SERVICES_SUBSCRIPTION_ID | Azure: The **Subscription ID** of the Azure Media Services subscription.                                                                                       |
+| AZ_STORAGE_ACCOUNT_NAME           | Azure: The name of the **Storage Account** to use for storing and serving image & video assets.                                                                |
+| AZ_STORAGE_CONTAINER_NAME         | Azure: The name of the **Blob Container** within the storage account where files will be stored.                                                               |
+| IMAGE_CDN_BASE_URL                | The base url of the **Image CDN**. This will replace the storage bucket base URL for images only (see [Image CDN](#image-cdn))                                 |
+| WPA_ENABLE_DOWNLOAD               | Set to `1` to **enable the /download route**. Any other value will cause this route to 404. You may wish to disable the download route until after your event. |
+| WPA_ENABLE_UPLOAD                 | Set to `1` to **enable the /upload route**. Any other value will cause this route to 404. You may wish to disable the upload route once your event is over.    |
+| WPA_INDEX_REDIRECT                | Set this to `upload` or `download` depending on **the page you want the homepage to redirect to**. Omit this value to render index.html.                       |
+| WPA_MANAGE_PASSWORD               | A **password** that is required to be able to delete assets from the /manage screen.                                                                           |
 
 
 ### Step 3: To run locally
@@ -159,7 +159,7 @@ _The following describes the folder structure of this application:_
     ├── api                   # Code that handles GET/POST/DELETE API requests
     ├── modules               # Additional server code to support the API (video transcoding code)
     ├── public                # Files available on the public website (HTML, Images, CSS & JS)
-    ├── src                   # Source files for image assets. In this case Photoshop files.
+    ├── src                   # Source files for the HTML pages to be rendered by Express, as well as image assets.
     ├── .env.example          # Example of a valid .env file
     ├── .gitignore
     ├── index.js              # App entry point, Express server code and routing

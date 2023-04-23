@@ -18,7 +18,9 @@ function deleteFiles(files = [], password) {
 
 managePhotosForm.addEventListener('submit', (event) => {
     event.preventDefault();
+});
 
+manageDeleteButton.addEventListener('click', (event) => {
     let files = getSelectedFiles();
     if(files.length === 0) return toastMessage('No files selected.');
 
