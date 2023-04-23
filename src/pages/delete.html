@@ -14,25 +14,24 @@
     <body>
         <header>
             <h1>Delete Photos</h1>
+            <p>Enter password to delete selected items</p>
         </header>
         <section>
-            <form id="managePhotosForm" method="get" action="/delete">
+            <form class="manageForm" id="manageDeleteForm" method="get" action="/delete">
                 <input 
                     type="text" 
                     name="username" 
                     value="admin" 
                     autocomplete="username" 
                 />
-                <label for="managePassword">
-                    Enter password to delete selected items<br />
-                </label>
+                <label for="managePassword">Password:</label>
                 <input 
                         type="password" 
                         name="password" 
                         id="managePassword" 
                         autocomplete="current-password"
                     />
-                <button id="manageDeleteButton" class="manageDelete button" disabled>
+                <button id="manageDeleteButton" class="manageButton button" disabled>
                     Delete selected
                 </button>
             </form>

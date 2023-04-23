@@ -1,4 +1,4 @@
-const managePhotosForm = document.getElementById('managePhotosForm');
+const manageDeleteForm = document.getElementById('manageDeleteForm');
 const managePassword = document.getElementById('managePassword');
 const manageDeleteButton = document.getElementById('manageDeleteButton');
 const manageGallery = document.getElementById('gallery');
@@ -16,7 +16,7 @@ function deleteFiles(files = [], password) {
     })
 }
 
-managePhotosForm.addEventListener('submit', (event) => {
+manageDeleteForm.addEventListener('submit', (event) => {
     event.preventDefault();
 });
 
@@ -46,7 +46,7 @@ manageDeleteButton.addEventListener('click', (event) => {
                 }, 4000);
                 
                 if("PasswordCredential" in window) {
-                    const creds = new PasswordCredential(managePhotosForm);
+                    const creds = new PasswordCredential(manageDeleteForm);
                     return navigator.credentials.store(creds);
                 }
             }

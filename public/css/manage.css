@@ -1,19 +1,9 @@
-label {
-    font-size: 0.8em;
-}
-
-input {
-    display: block;
-    width: 80%;
-    margin: auto;
-}
-
-input[name=username] {
-    display: none;
-}
-
-h1 {
+header {
     text-align: center;
+}
+
+h1 { 
+    margin-bottom: 0.4em;
 }
 
 nav ul li {
@@ -22,33 +12,47 @@ nav ul li {
     font-size: 1.4em;
 }
 
+input {
+    display: block;
+    margin: auto;
+    width: 80%;
+    max-width: 300px;
+}
+
+input[name=username] {
+    display: none;
+}
+
 #managePassword { 
-    margin-top: calc(0.6em + 4px);
+    margin: 0.7em auto;
     padding: 0.5em 0.3em;
     font-size: 1.4em;
 }
 
-.manageDelete {
+.manageButton {
     display: block;
     width: 80%;
-    margin: 0.6em auto 2em;
-    border: 2px solid #ffb4b4;
+    max-width: 300px;
+    margin: 0.6em auto 1.8em;
+    border: 2px solid #b28b0d;
     border-radius: 0.3em;
-    background-color: #be1717;
-    padding: 0.3em 0.8em;
     font-size: 1em;
+}
+
+#manageDeleteButton {
+    border-color: #ffb4b4;
+    background-color: #be1717;
     color: #ebebeb;
 }
 
-.manageDelete:disabled {
+#manageDeleteButton:disabled {
     border: 2px solid #ddb7b7;
     background-color: #daabab;
     color: #909090;
 }
 
-.manageDelete:active {
+#manageDeleteButton:active {
     background-color: #cf4343;
-    padding: 0.3em 0.8em;
 }
 
 #gallery.manageGallery { 

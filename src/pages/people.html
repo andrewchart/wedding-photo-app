@@ -14,9 +14,40 @@
     <body>
         <header>
             <h1>Detect People</h1>
+            <p>
+                Enter the password and click the button below to analyse all photos currently in
+                the storage location for people's faces.
+            </p>
+            <p>
+                Once the analysis is complete all the unique faces found in the photos will be 
+                displayed here and the photos containing people will automatically be tagged.
+            </p>
+            <p>
+                You can apply a name to each face from this page, if you wish. If any of the 
+                automatic tags are incorrect, you can manually amend the tags on the 
+                <a href="/tag">tag photos</a> page.
+            </p>
         </header>
         <section>
-            
+            <form class="manageForm" id="managePeopleForm" method="get" action="/people">
+                <input 
+                    type="text" 
+                    name="username" 
+                    value="admin" 
+                    autocomplete="username" 
+                />
+                <label for="managePassword">Password:</label>
+                <input 
+                    type="password" 
+                    name="password" 
+                    id="managePassword" 
+                    autocomplete="current-password"
+                />
+                <button id="" class="button manageButton" disabled>
+                    Analyse photos
+                </button>
+            </form>
+            <div id="spinner" class="hidden"><div></div></div>
         </section>
         
         <div id="toast">
