@@ -36,14 +36,19 @@
                     value="admin" 
                     autocomplete="username" 
                 />
-                <label for="managePassword">Password:</label>
+                <label for="managePeoplePassword">Password:</label>
                 <input 
                     type="password" 
                     name="password" 
-                    id="managePassword" 
+                    id="managePeoplePassword" 
+                    class="managePassword"
                     autocomplete="current-password"
                 />
-                <button id="" class="button manageButton" disabled>
+                <button 
+                    id="managePeopleButton" 
+                    class="button manageButton manageActionButton requiresPassword"
+                    data-call-to-action="Analyse photos"
+                    disabled>
                     Analyse photos
                 </button>
             </form>
@@ -55,6 +60,6 @@
             <div class="message"></div>
         </div>
 
-        <script src="js/scripts.js"></script>
+        <script src="js/manage.js"></script>
     </body>
 </html>

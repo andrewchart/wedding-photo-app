@@ -1,95 +1,22 @@
-const manageDeleteForm = document.getElementById('manageDeleteForm');
-const managePassword = document.getElementById('managePassword');
-const manageDeleteButton = document.getElementById('manageDeleteButton');
+/* Shared functions on management pages */
+
+// Element definitions
+const managePassword = document.querySelector('.managePassword');
+const manageActionButton = document.querySelector('.manageActionButton');
 const manageGallery = document.getElementById('gallery');
 
-function deleteFiles(files = [], password) {
-    return fetch(`/api/photos`, {
-        method: 'DELETE',
-        body: JSON.stringify({
-            files: files,
-            password: password
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-}
-
-manageDeleteForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-});
-
-manageDeleteButton.addEventListener('click', (event) => {
-    let files = getSelectedFiles();
-    if(files.length === 0) return toastMessage('No files selected.');
-
-    manageDeleteButton.disabled = true;
-    manageDeleteButton.innerText = "Please wait...";
-
-    deleteFiles(files, managePassword.value).then((response) => {
-
-        return response.json().then((body) => {
-            if(response.status === 401) {
-                return toastMessage(`
-                    ❌ ${body.outcomes.failed.length} files 
-                     were not deleted. Incorrect password.
-                `);
-            }
-
-            toastMessage(processOutcomes(body.outcomes));
-
-            if(body.outcomes.completed.length > 0) { // something suceeded...
-                setTimeout(() => {
-                    refreshPhotoThumbnails();
-                    updateDeleteButton();
-                }, 4000);
-                
-                if("PasswordCredential" in window) {
-                    const creds = new PasswordCredential(manageDeleteForm);
-                    return navigator.credentials.store(creds);
-                }
-            }
-        });
-        
-    }).catch((error) => {
-        toastMessage(error.message);
-    }).finally(() => {
-        updateDeleteButton();
-        setDeleteButtonState();
+// Allow selection of items
+if(manageGallery) {
+    manageGallery.addEventListener('click', (event) => {
+        if(event.target.id === 'gallery') return;
+        event.target.closest('li').classList.toggle('selected');
+        updateManageActionButtonText();
+        event.stopPropagation();
+        event.preventDefault();
     });
-});
-
-managePassword.addEventListener('input', setDeleteButtonState);
-
-function processOutcomes(outcomes) {
-    let message = '';
-    
-    if(outcomes.completed.length > 0) {
-        message += `✅ ${outcomes.completed.length} files successfully deleted.<br />`;
-    }
-
-    if(outcomes.failed.length > 0) {
-        message += `
-            ❌ ${outcomes.failed.length} files 
-            were not deleted:`;
-
-        for(let i = outcomes.failed.length - 1; i >= 0; i--) {
-            message += `<pre>${outcomes.failed[i]}</pre>`;
-        }
-    }
-
-    return message;
 }
 
-manageGallery.addEventListener('click', (event) => {
-    if(event.target.id === 'gallery') return;
-    event.target.closest('li').classList.toggle('selected');
-    updateDeleteButton();
-    event.stopPropagation();
-    event.preventDefault();
-});
-
+// Returns array of selected items
 function getSelectedFiles() { 
     const selectedElements = document.querySelectorAll('#gallery li.selected');
     let selectedFiles = [];
@@ -101,14 +28,32 @@ function getSelectedFiles() {
     return selectedFiles;
 }
 
-function updateDeleteButton() {
+// Updates the text of the button according to number of items selected
+function updateManageActionButtonText() {
     let numSelected = getSelectedFiles().length;
-    let message = 'Delete selected';
+    let message = manageActionButton.dataset.callToAction;
     if(numSelected > 0) message += ` (${numSelected})`;
-    manageDeleteButton.innerText = message;
+    manageActionButton.innerText = message;
 }
 
-function setDeleteButtonState() {
-    manageDeleteButton.disabled = (managePassword.value.length > 0) ?
-        false : true;
+// If the action requires a password disable the button until something is entered in the pwd field
+managePassword.addEventListener('input', setManageActionButtonState);
+
+function setManageActionButtonState() {
+    if(manageActionButton.classList.contains('requiresPassword')) {
+       return manageActionButton.disabled = (managePassword.value.length > 0) ? false : true;
+    }
+    manageActionButton.disabled = false;
+}
+
+// Returns array of selected items on manage pages
+function getSelectedFiles() { 
+    const selectedElements = document.querySelectorAll('#gallery li.selected');
+    let selectedFiles = [];
+
+    selectedElements.forEach((element) => {
+        selectedFiles.push(element.dataset.bucketPath);
+    });
+
+    return selectedFiles;
 }

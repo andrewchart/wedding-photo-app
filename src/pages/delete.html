@@ -24,21 +24,26 @@
                     value="admin" 
                     autocomplete="username" 
                 />
-                <label for="managePassword">Password:</label>
+                <label for="manageDeletePassword">Password:</label>
                 <input 
-                        type="password" 
-                        name="password" 
-                        id="managePassword" 
-                        autocomplete="current-password"
-                    />
-                <button id="manageDeleteButton" class="manageButton button" disabled>
+                    type="password" 
+                    name="password" 
+                    id="manageDeletePassword"
+                    class="managePassword"
+                    autocomplete="current-password"
+                />
+                <button 
+                    id="manageDeleteButton" 
+                    class="button manageButton manageActionButton requiresPassword"
+                    data-call-to-action="Delete selected"
+                    disabled>
                     Delete selected
                 </button>
             </form>
 
             <ul 
                 id="gallery" 
-                class="manageGallery" 
+                class="manageGallery manageDeleteGallery" 
                 data-next-page="" 
                 data-done="false" 
                 data-page-size="20">
@@ -66,5 +71,6 @@
 
         <script src="js/scripts.js"></script>
         <script src="js/manage.js"></script>
+        <script src="js/delete.js"></script>
     </body>
 </html>
