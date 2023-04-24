@@ -54,27 +54,45 @@ function renderPhotoThumbnails(
     
             // Populate the gallery
             data.files.forEach((file, i) => {
+
+                const { metaTags, peopleTags, url } = file;
                 
-                let contentType = file.contentType.split('/')[0];
-                let lightboxContentType = (contentType === 'video' ? 
+                const contentType = file.contentType.split('/')[0];
+                const lightboxContentType = (contentType === 'video' ? 
                     'customVideo' : contentType);
 
-                let galleryItem = galleryItemTemplate.cloneNode(true);
+                const galleryItem = galleryItemTemplate.cloneNode(true);
+                const galleryItemLi = galleryItem.querySelector('li');
                 
-                // For the manage page, tag each gallery element with the 
-                // storage bucket file path
-                let bucketPathElement = galleryItem.querySelector('.bucketPath');
+                // For manage pages, tag each gallery element with the storage bucket file path
+                const bucketPathElement = galleryItem.querySelector('.bucketPath');
 
                 if(bucketPathElement) {
-                    let bucketPath = new URL(file.url).pathname
+                    let bucketPath = new URL(url).pathname
                         .replace(/^(\/wedding-photo-app)?\/original/, 'original');
 
                     bucketPath = decodeURI(bucketPath);
                         
                     bucketPathElement.innerText = bucketPath;
-                    galleryItem.querySelector('li').dataset.bucketPath = bucketPath;
+                    galleryItemLi.dataset.bucketPath = bucketPath;
                 }
                 
+                // For manage pages, attach meta data and people tags to gallery elements
+                const metaTagsElement = galleryItem.querySelector('.metaTags');
+
+                if(metaTagsElement && metaTags) {
+                    galleryItemLi.metaTags = JSON.parse(metaTags);
+                    galleryItemLi.dataset.metaTagsChanged = false;
+                }
+                
+                const peopleTagsElement = galleryItem.querySelector('.peopleTags');
+
+                if(peopleTagsElement && peopleTags) {
+                    galleryItemLi.peopleTags = JSON.parse(peopleTags);
+                    galleryItemLi.dataset.peopleTagsChanged = false;
+                }
+
+                // Link element
                 let linkElement = galleryItem.querySelector('a');
 
                 let thumb = new Image();
@@ -131,6 +149,8 @@ function renderPhotoThumbnails(
                 }
 
             });
+
+            renderTags();
 
             // If the gallery is now done, show a message
             if(galleryElement.dataset.done === "true") {
@@ -434,6 +454,32 @@ function captureVideoThumbnail(file) {
                 "image/jpeg",
                 0.6 // Quality
             );
+        });
+    });
+}
+
+function renderTags(targetElement = null) {
+    let metaTagLists, peopleTagLists;
+
+    if(targetElement) {
+        metaTagLists = targetElement.querySelectorAll('ul.metaTags');
+        peopleTagLists = targetElement.querySelectorAll('ul.peopleTags');
+    } else {
+        metaTagLists = document.querySelectorAll('ul.metaTags');
+        peopleTagLists = document.querySelectorAll('ul.peopleTags');
+    }
+
+    metaTagLists.forEach((list) => {
+        const tagsToRender = (list.closest('ul#gallery > li').metaTags || []);
+        tagsToRender.forEach((tag) => {
+            list.innerHTML += `<li>${tag.name}<a class="deleteTag"></a></li>`;
+        });
+    });
+
+    peopleTagLists.forEach((list) => {
+        const tagsToRender = (list.closest('ul#gallery > li').peopleTags || []);
+        tagsToRender.forEach((tag) => {
+            list.innerHTML += `<li>${tag.name}<a class="deleteTag"></a></li>`;
         });
     });
 }
