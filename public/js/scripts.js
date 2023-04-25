@@ -128,8 +128,10 @@ function renderPhotoThumbnails(
                                     to view this video.</p>`;
                         }
 
-                        linkElement.href = `#video${i}`;
-                        media.id = `video${i}`;
+                        const videoIndex = parseInt(galleryElement.dataset.numVideos) + 1;
+                        galleryElement.dataset.numVideos = videoIndex;
+                        linkElement.href = `#video${videoIndex}`;
+                        media.id = `video${videoIndex}`;
                         videoTemplate.appendChild(media);
                         break;
 
@@ -201,6 +203,7 @@ function refreshPhotoThumbnails() {
     galleryElement.replaceChildren();
     galleryElement.dataset.done = "false";
     galleryElement.dataset.nextPage = "";
+    galleryElement.dataset.numVideos = 0;
     renderPhotoThumbnails();
 }
 
