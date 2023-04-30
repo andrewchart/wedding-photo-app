@@ -166,6 +166,75 @@ function createPhotos(req, res) {
    
 }
 
+// PATCH
+function patchPhotos(req, res) {
+    if(!req.body.files) {
+        return res.status(400).send({ 
+            message: 'Bad Request', 
+            details: 'No files supplied.' 
+        });
+    }
+
+    let outcomes = {
+        completed: [],
+        failed: [...req.body.files] // assume files haven't been updated
+    }
+
+    if(req.body.password !== process.env.WPA_MANAGE_PASSWORD) {
+        res.status(401).send({ 
+            message: 'Unauthorized', 
+            details: 'Password does not match.', 
+            outcomes    
+        });
+    } else {
+        let patchOperations = [];
+
+        // Loop through each file and move from 'failed' to 
+        // 'completed' if the PATCH succeeds.
+        outcomes.failed.forEach((file, i) => {
+
+            const blockBlob = new BlockBlobClient(
+                `${containerUrl}/original/${file.name}`, 
+                new DefaultAzureCredential()
+            );
+            
+            // Currently we're only handling PATCHing metadata, not the blob itself
+            if(!file.metadata) return;
+            let patchOp = blockBlob.setMetadata(file.metadata).then((result) => {
+                if(!result.errorCode) {
+                    outcomes.completed.push(file);
+                    delete outcomes.failed[i];
+                }
+            }).catch((error) => {
+                console.log(error);
+                // Do nothing - the patch failed
+            });
+
+            patchOperations.push(patchOp);
+        });
+
+        Promise.all(patchOperations).then(() => {
+            outcomes.failed = outcomes.failed.flat();
+
+            if(outcomes.completed.length < req.body.files.length) {
+                throw new Error('Not all files were updated');
+            }
+
+            res.status(200).send({ 
+                message: 'OK',
+                details: 'All photos updated',
+                outcomes
+            });
+        }).catch((error) => {
+            res.status(500).send({ 
+                message: 'Internal Server Error',
+                details: 'Not all files were updated',
+                outcomes
+            });
+        });   
+    }
+}
+
 // DELETE
 function deletePhotos(req, res) {
     if(!req.body.files) {
@@ -359,5 +428,6 @@ async function getTranscodedUrl(item) {
 module.exports = { 
     getPhotos,
     createPhotos,
+    patchPhotos,
     deletePhotos
 }
