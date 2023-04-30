@@ -168,6 +168,12 @@ function createPhotos(req, res) {
 
 // DELETE
 function deletePhotos(req, res) {
+    if(!req.body.files) {
+        return res.status(400).send({ 
+            message: 'Bad Request', 
+            details: 'No files supplied.' 
+        });
+    }
 
     let outcomes = {
         completed: [],
@@ -203,7 +209,7 @@ function deletePhotos(req, res) {
         // Loop through each file and move from 'failed' to 
         // 'completed' if the DELETE succeeds.
         outcomes.failed.forEach((file, i) => {
-            let deleteOp = container.deleteBlob(file).then((result) => {
+            let deleteOp = container.deleteBlob(file.name).then((result) => {
                 if(!result.errorCode) {
                     outcomes.completed.push(file);
                     delete outcomes.failed[i];

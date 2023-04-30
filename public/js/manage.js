@@ -16,13 +16,13 @@ if(manageGallery) {
     });
 }
 
-// Returns array of selected items
+// Returns array of selected items on manage pages
 function getSelectedFiles() { 
     const selectedElements = document.querySelectorAll('#gallery li.selected');
     let selectedFiles = [];
 
     selectedElements.forEach((element) => {
-        selectedFiles.push(element.dataset.bucketPath);
+        selectedFiles.push({ "name": element.dataset.bucketPath });
     });
 
     return selectedFiles;
@@ -44,16 +44,4 @@ function setManageActionButtonState() {
        return manageActionButton.disabled = (managePassword.value.length > 0) ? false : true;
     }
     manageActionButton.disabled = false;
-}
-
-// Returns array of selected items on manage pages
-function getSelectedFiles() { 
-    const selectedElements = document.querySelectorAll('#gallery li.selected');
-    let selectedFiles = [];
-
-    selectedElements.forEach((element) => {
-        selectedFiles.push(element.dataset.bucketPath);
-    });
-
-    return selectedFiles;
 }
