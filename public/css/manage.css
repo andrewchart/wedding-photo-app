@@ -39,6 +39,22 @@ input[name=username] {
     font-size: 1em;
 }
 
+.manageSaveButton {
+    border-color: #65dd95;
+    background-color: #17be70;
+    color: #fff;
+}
+
+.manageSaveButton:disabled {
+    border: 2px solid #b7ddcd;
+    background-color: #abdacd;
+    color: #909090;
+}
+
+.manageSaveButton:active {
+    background-color: #2fe08e;
+}
+
 #manageDeleteButton {
     border-color: #ffb4b4;
     background-color: #be1717;
@@ -69,6 +85,10 @@ input[name=username] {
     border: 1px solid #ddd;
 }
 
+#gallery.manageGallery > li[data-tags-changed="true"] {
+    border: 3px dashed #2fe08e;
+}
+
 #gallery.manageGallery.tagGallery > li {
     height: 75vw;
 }
@@ -90,8 +110,12 @@ input[name=username] {
 }
 
 #gallery.manageGallery > li.selected {
-    background-color: #eb1d1d;
+    background-color: #0d5eb2;
     color: #ffdbdb;
+}
+
+#gallery.manageDeleteGallery > li.selected {
+    background-color: #eb1d1d;
 }
 
 #gallery.manageGallery > li.selected img {

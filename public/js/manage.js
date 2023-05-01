@@ -22,7 +22,13 @@ function getSelectedFiles() {
     let selectedFiles = [];
 
     selectedElements.forEach((element) => {
-        selectedFiles.push({ "name": element.dataset.bucketPath });
+        selectedFiles.push({ 
+            "name": element.dataset.bucketPath,
+            "metadata": {
+                metaTags: JSON.stringify(element.metaTags),
+                peopleTags: JSON.stringify(element.peopleTags)
+            }
+        });
     });
 
     return selectedFiles;
@@ -32,7 +38,9 @@ function getSelectedFiles() {
 function updateManageActionButtonText() {
     let numSelected = getSelectedFiles().length;
     let message = manageActionButton.dataset.callToAction;
-    if(numSelected > 0) message += ` (${numSelected})`;
+    if(numSelected > 0 && manageActionButton.id !== 'manageTagSaveButton') {
+        message += ` (${numSelected})`;
+    }
     manageActionButton.innerText = message;
 }
 

@@ -82,15 +82,15 @@ function renderPhotoThumbnails(
 
                 if(metaTagsElement && metaTags) {
                     galleryItemLi.metaTags = JSON.parse(metaTags);
-                    galleryItemLi.dataset.metaTagsChanged = false;
                 }
                 
                 const peopleTagsElement = galleryItem.querySelector('.peopleTags');
 
                 if(peopleTagsElement && peopleTags) {
                     galleryItemLi.peopleTags = JSON.parse(peopleTags);
-                    galleryItemLi.dataset.peopleTagsChanged = false;
                 }
+
+                galleryItemLi.dataset.tagsChanged = false; // Track if tags have changed at all
 
                 // Link element
                 let linkElement = galleryItem.querySelector('a');
@@ -457,32 +457,6 @@ function captureVideoThumbnail(file) {
                 "image/jpeg",
                 0.6 // Quality
             );
-        });
-    });
-}
-
-function renderTags(targetElement = null) {
-    let metaTagLists, peopleTagLists;
-
-    if(targetElement) {
-        metaTagLists = targetElement.querySelectorAll('ul.metaTags');
-        peopleTagLists = targetElement.querySelectorAll('ul.peopleTags');
-    } else {
-        metaTagLists = document.querySelectorAll('ul.metaTags');
-        peopleTagLists = document.querySelectorAll('ul.peopleTags');
-    }
-
-    metaTagLists.forEach((list) => {
-        const tagsToRender = (list.closest('ul#gallery > li').metaTags || []);
-        tagsToRender.forEach((tag) => {
-            list.innerHTML += `<li>${tag.name}<a class="deleteTag"></a></li>`;
-        });
-    });
-
-    peopleTagLists.forEach((list) => {
-        const tagsToRender = (list.closest('ul#gallery > li').peopleTags || []);
-        tagsToRender.forEach((tag) => {
-            list.innerHTML += `<li>${tag.name}<a class="deleteTag"></a></li>`;
         });
     });
 }

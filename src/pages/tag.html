@@ -16,6 +16,29 @@
             <h1>Tag Photos</h1>
         </header>
         <section>
+            <form class="manageForm" id="manageTagForm" method="get" action="/tag">
+                <input 
+                    type="text" 
+                    name="username" 
+                    value="admin" 
+                    autocomplete="username" 
+                />
+                <label for="manageTagPassword">Password:</label>
+                <input 
+                    type="password" 
+                    name="password" 
+                    id="manageTagPassword"
+                    class="managePassword"
+                    autocomplete="current-password"
+                />
+                <button 
+                    id="manageTagSaveButton" 
+                    class="button manageButton manageActionButton manageSaveButton requiresPassword"
+                    data-call-to-action="Save all changes"
+                    disabled>
+                    Save all changes
+                </button>
+            </form>
             <ul 
                 id="gallery" 
                 class="manageGallery tagGallery" 
@@ -53,5 +76,7 @@
         </template>
 
         <script src="js/scripts.js"></script>
+        <script src="js/manage.js"></script>
+        <script src="js/tag.js"></script>
     </body>
 </html>
