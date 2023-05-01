@@ -29,7 +29,7 @@ manageDeleteButton.addEventListener('click', (event) => {
                 `);
             }
 
-            toastMessage(processDeleteOutcomes(body.outcomes));
+            toastMessage(processOutcomes(body.outcomes, "deleted"));
 
             if(body.outcomes.completed.length > 0) { // something suceeded...
                 setTimeout(() => {
@@ -63,26 +63,5 @@ function deleteFiles(files = [], password) {
         headers: {
             'Content-Type': 'application/json'
         }
-    })
-}
-
-// Toast message for delete operations
-function processDeleteOutcomes(outcomes) {
-    let message = '';
-    
-    if(outcomes.completed.length > 0) {
-        message += `✅ ${outcomes.completed.length} files successfully deleted.<br />`;
-    }
-
-    if(outcomes.failed.length > 0) {
-        message += `
-            ❌ ${outcomes.failed.length} files 
-            were not deleted:`;
-
-        for(let i = outcomes.failed.length - 1; i >= 0; i--) {
-            message += `<pre>${outcomes.failed[i]}</pre>`;
-        }
-    }
-
-    return message;
+    });
 }

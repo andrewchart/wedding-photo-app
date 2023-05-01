@@ -45,3 +45,24 @@ function setManageActionButtonState() {
     }
     manageActionButton.disabled = false;
 }
+
+// Toast message for API operations
+function processOutcomes(outcomes, verb = 'actioned') {
+    let message = '';
+    
+    if(outcomes.completed.length > 0) {
+        message += `✅ ${outcomes.completed.length} files successfully ${verb}.<br />`;
+    }
+
+    if(outcomes.failed.length > 0) {
+        message += `
+            ❌ ${outcomes.failed.length} files 
+            were not ${verb}:`;
+
+        for(let i = outcomes.failed.length - 1; i >= 0; i--) {
+            message += `<pre>${outcomes.failed[i].name}</pre>`;
+        }
+    }
+
+    return message;
+}
