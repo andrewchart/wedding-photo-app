@@ -17,30 +17,6 @@
             <p>Enter password to delete selected items</p>
         </header>
         <section>
-            <form class="manageForm" id="manageDeleteForm" method="get" action="/delete">
-                <input 
-                    type="text" 
-                    name="username" 
-                    value="admin" 
-                    autocomplete="username" 
-                />
-                <label for="manageDeletePassword">Password:</label>
-                <input 
-                    type="password" 
-                    name="password" 
-                    id="manageDeletePassword"
-                    class="managePassword"
-                    autocomplete="current-password"
-                />
-                <button 
-                    id="manageDeleteButton" 
-                    class="button manageButton manageActionButton requiresPassword"
-                    data-call-to-action="Delete selected"
-                    disabled>
-                    Delete selected
-                </button>
-            </form>
-
             <ul 
                 id="gallery" 
                 class="manageGallery manageDeleteGallery" 
@@ -55,6 +31,35 @@
                 <span class="message">No more photos to show.</span><br />
                 <a class="action" href="#">Refresh to see newer photos</a>
             </p>
+
+            <form class="manageCommitForm" id="manageDeleteForm" method="get" action="/delete">
+                <fieldset>
+                    <input 
+                        type="text" 
+                        name="username" 
+                        value="admin" 
+                        autocomplete="username" 
+                    />
+                    <label for="manageDeletePassword">
+                        Password: 
+                        <input 
+                            type="password" 
+                            name="password" 
+                            id="manageDeletePassword"
+                            class="managePassword"
+                            autocomplete="current-password"
+                        />
+                    </label>
+                    
+                    <button 
+                        id="manageDeleteButton" 
+                        class="button manageButton manageCommitButton requiresPassword"
+                        data-call-to-action="Delete selected"
+                        disabled>
+                        Delete selected
+                    </button>
+                </fieldset>
+            </form>
         </section>
         
         <div id="toast">

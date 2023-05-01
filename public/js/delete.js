@@ -34,7 +34,7 @@ manageDeleteButton.addEventListener('click', (event) => {
             if(body.outcomes.completed.length > 0) { // something suceeded...
                 setTimeout(() => {
                     refreshPhotoThumbnails();
-                    updateManageActionButtonText();
+                    updateManageCommitButtonText();
                 }, 4000);
                 
                 if("PasswordCredential" in window) {
@@ -47,8 +47,8 @@ manageDeleteButton.addEventListener('click', (event) => {
     }).catch((error) => {
         toastMessage(error.message);
     }).finally(() => {
-        updateManageActionButtonText();
-        setManageActionButtonState();
+        updateManageCommitButtonText();
+        setManageCommitButtonState();
     });
 });
 

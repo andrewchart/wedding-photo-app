@@ -102,7 +102,7 @@ function saveTags() {
             if(body.outcomes.completed.length > 0) { // something suceeded...
                 setTimeout(() => {
                     //refreshPhotoThumbnails(); // TODO: reset modified states but nothing else?
-                    updateManageActionButtonText();
+                    updateManageCommitButtonText();
                 }, 4000);
                 
                 if("PasswordCredential" in window) {
@@ -115,8 +115,8 @@ function saveTags() {
     }).catch((error) => {
         toastMessage(error.message);
     }).finally(() => {
-        updateManageActionButtonText();
-        setManageActionButtonState();
+        updateManageCommitButtonText();
+        setManageCommitButtonState();
     });
 }
 

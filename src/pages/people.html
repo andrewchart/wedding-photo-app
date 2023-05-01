@@ -29,7 +29,8 @@
             </p>
         </header>
         <section>
-            <form class="manageForm" id="managePeopleForm" method="get" action="/people">
+            <div id="spinner" class="hidden"><div></div></div>
+            <form class="manageCommitForm" id="managePeopleForm" method="get" action="/people">
                 <input 
                     type="text" 
                     name="username" 
@@ -46,13 +47,12 @@
                 />
                 <button 
                     id="managePeopleButton" 
-                    class="button manageButton manageActionButton requiresPassword"
+                    class="button manageButton manageCommitButton requiresPassword"
                     data-call-to-action="Analyse photos"
                     disabled>
                     Analyse photos
                 </button>
             </form>
-            <div id="spinner" class="hidden"><div></div></div>
         </section>
         
         <div id="toast">

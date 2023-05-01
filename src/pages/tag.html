@@ -16,29 +16,6 @@
             <h1>Tag Photos</h1>
         </header>
         <section>
-            <form class="manageForm" id="manageTagForm" method="get" action="/tag">
-                <input 
-                    type="text" 
-                    name="username" 
-                    value="admin" 
-                    autocomplete="username" 
-                />
-                <label for="manageTagPassword">Password:</label>
-                <input 
-                    type="password" 
-                    name="password" 
-                    id="manageTagPassword"
-                    class="managePassword"
-                    autocomplete="current-password"
-                />
-                <button 
-                    id="manageTagSaveButton" 
-                    class="button manageButton manageActionButton manageSaveButton requiresPassword"
-                    data-call-to-action="Save all changes"
-                    disabled>
-                    Save all changes
-                </button>
-            </form>
             <ul 
                 id="gallery" 
                 class="manageGallery tagGallery" 
@@ -53,6 +30,34 @@
                 <span class="message">No more photos to show.</span><br />
                 <a class="action" href="#">Refresh to see newer photos</a>
             </p>
+            
+            <form class="manageCommitForm" id="manageTagForm" method="get" action="/tag">
+                <fieldset>
+                    <input 
+                        type="text" 
+                        name="username" 
+                        value="admin" 
+                        autocomplete="username" 
+                    />
+                    <label for="manageTagPassword">
+                        Password:
+                        <input 
+                            type="password" 
+                            name="password" 
+                            id="manageTagPassword"
+                            class="managePassword"
+                            autocomplete="current-password"
+                        />
+                    </label>
+                    <button 
+                        id="manageTagSaveButton" 
+                        class="button manageButton manageCommitButton manageSaveButton requiresPassword"
+                        data-call-to-action="Save all changes"
+                        disabled>
+                        Save all changes
+                    </button>
+                </fieldset>
+            </form>
         </section>
         
         <div id="toast">

@@ -2,7 +2,7 @@
 
 // Element definitions
 const managePassword = document.querySelector('.managePassword');
-const manageActionButton = document.querySelector('.manageActionButton');
+const manageCommitButton = document.querySelector('.manageCommitButton');
 const manageGallery = document.getElementById('gallery');
 
 // Allow selection of items
@@ -10,7 +10,7 @@ if(manageGallery) {
     manageGallery.addEventListener('click', (event) => {
         if(event.target.id === 'gallery') return;
         event.target.closest('li').classList.toggle('selected');
-        updateManageActionButtonText();
+        updateManageCommitButtonText();
         event.stopPropagation();
         event.preventDefault();
     });
@@ -35,23 +35,23 @@ function getSelectedFiles() {
 }
 
 // Updates the text of the button according to number of items selected
-function updateManageActionButtonText() {
+function updateManageCommitButtonText() {
     let numSelected = getSelectedFiles().length;
-    let message = manageActionButton.dataset.callToAction;
-    if(numSelected > 0 && manageActionButton.id !== 'manageTagSaveButton') {
+    let message = manageCommitButton.dataset.callToAction;
+    if(numSelected > 0 && manageCommitButton.id !== 'manageTagSaveButton') {
         message += ` (${numSelected})`;
     }
-    manageActionButton.innerText = message;
+    manageCommitButton.innerText = message;
 }
 
 // If the action requires a password disable the button until something is entered in the pwd field
-managePassword.addEventListener('input', setManageActionButtonState);
+managePassword.addEventListener('input', setManageCommitButtonState);
 
-function setManageActionButtonState() {
-    if(manageActionButton.classList.contains('requiresPassword')) {
-       return manageActionButton.disabled = (managePassword.value.length > 0) ? false : true;
+function setManageCommitButtonState() {
+    if(manageCommitButton.classList.contains('requiresPassword')) {
+       return manageCommitButton.disabled = (managePassword.value.length > 0) ? false : true;
     }
-    manageActionButton.disabled = false;
+    manageCommitButton.disabled = false;
 }
 
 // Toast message for API operations
