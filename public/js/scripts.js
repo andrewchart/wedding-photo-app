@@ -90,7 +90,9 @@ function renderPhotoThumbnails(
                     galleryItemLi.peopleTags = JSON.parse(peopleTags);
                 }
 
-                galleryItemLi.dataset.tagsChanged = false; // Track if tags have changed at all
+                if(metaTagsElement || peopleTagsElement) {
+                    galleryItemLi.dataset.tagsChanged = false; // Track if tags have changed at all
+                }
 
                 // Link element
                 let linkElement = galleryItem.querySelector('a');
@@ -152,8 +154,6 @@ function renderPhotoThumbnails(
 
             });
 
-            renderTags();
-
             // If the gallery is now done, show a message
             if(galleryElement.dataset.done === "true") {
 
@@ -184,6 +184,7 @@ function renderPhotoThumbnails(
         .finally(() => {
             spinnerElement.classList.add('hidden');
             window.fetchIsRunning = false;
+            if(typeof renderTags === "function") renderTags();
             refreshLightbox();
         });
 };

@@ -53,6 +53,20 @@ galleryElement.addEventListener('click', (event) => {
     }
 });
 
+// Add tag to an <li> for a given file
+function addTag(element, tagType, tagName) {
+    if(!element || !tagType || !tagName) return false;
+
+    element[tagType] = element[tagType] || [];
+
+    // Remove the tag from the array
+    element[tagType].push({ "name": tagName });
+
+    // Mark the <li> as having had its tags modified
+    element.dataset.tagsChanged = true;
+    return true;
+}
+
 // Remove tag from <li> for a given file
 function removeTag(element, tagType, tagName) {
     if(!element || !tagType || !tagName) return false;
