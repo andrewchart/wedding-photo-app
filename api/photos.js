@@ -194,7 +194,7 @@ function patchPhotos(req, res) {
         outcomes.failed.forEach((file, i) => {
 
             const blockBlob = new BlockBlobClient(
-                `${containerUrl}/original/${file.name}`, 
+                `${containerUrl}/${file.name}`, 
                 new DefaultAzureCredential()
             );
             
