@@ -26,6 +26,10 @@ app.get('/', (req, res) => {
             res.redirect('/download');
             break;
 
+        case 'view':
+            res.redirect('/view');
+            break;
+
         default:
             res.sendFile(__dirname + '/public/index.html');
             break;
@@ -52,6 +56,10 @@ app.get('/download/', (req, res) => {
         });
     } 
     res.sendFile(__dirname + '/src/pages/download.html');
+});
+
+app.get('/view/', (req, res) => {
+    res.sendFile(__dirname + '/src/pages/view.html');
 });
 
 app.get('/manage/', (req, res) => {
@@ -95,10 +103,26 @@ app.get('/api/photos', (req, res) => {
 });
 
 app.post('/api/photos', (req, res) => {
+    if(parseInt(process.env.WPA_ENABLE_UPLOAD) !== 1) {
+        return res.status(405).json({ 
+            status: 405, 
+            message: 'Not Allowed', 
+            details: 'Method not allowed.' 
+        });
+    } 
+
     photosAPI.createPhotos(req, res);
 });
 
 app.patch('/api/photos', (req, res) => {
+    if(parseInt(process.env.WPA_ENABLE_UPLOAD) !== 1) {
+        return res.status(405).json({ 
+            status: 405, 
+            message: 'Not Allowed', 
+            details: 'Method not allowed.' 
+        });
+    } 
+
     photosAPI.patchPhotos(req, res);
 });
 
